@@ -15,13 +15,11 @@
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = DxeServiceWrapper
-  MODULE_UNI_FILE                = DxeServiceWrapper.uni
-  FILE_GUID                      = c84215aa-5c7f-4875-8666-de17031a859e
-  MODULE_TYPE                    = DXE_DRIVER
+  BASE_NAME                      = BBClient
+  FILE_GUID                      = bd77e273-0c1b-4a0a-b698-5d9a87cf6671
+  MODULE_TYPE                    = UEFI_APPLICATION
   VERSION_STRING                 = 1.0
-  ENTRY_POINT                    = WrapperEntry
-  [Depex] gEfiWrapperProtocolGuid
+  ENTRY_POINT                    = BBClientMain
 
 #
 #  This flag specifies whether HII resource section is generated into PE image.
@@ -35,25 +33,20 @@
 #
 
 [Sources]
-  DxeServiceWrapper.c
-  DxeServiceWrapper.h
-  DxeServiceWrapperStr.uni
+  BBClient.c
 
 [Packages]
   MdePkg/MdePkg.dec
-  MdeModulePkg/MdeModulePkg.dec
+  ShellPkg/ShellPkg.dec
 
 [LibraryClasses]
+  UefiApplicationEntryPoint
   UefiLib
-  UefiDriverEntryPoint
-  UefiBootServicesTableLib
-  DxeServicesTableLib
-  DebugLib
+  ShellLib
+  HobLib
+
+[FeaturePcd]
+
+[Pcd]
 
 
-[Protocols]
-gEfiWrapperProtocolGuid
-  
-
-[UserExtensions.TianoCore."ExtraFiles"]
-  DxeServiceWrapperExtra.uni

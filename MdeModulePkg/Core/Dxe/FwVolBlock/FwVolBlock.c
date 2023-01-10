@@ -518,7 +518,7 @@ ProduceFVBProtocolOnBuffer (
   /////////////////////////////////////////////////////////////////////////
   if(Length == MAX_UINT32)
   {
-    FvbDev->NumBlocks = MAX_UINT32+10;
+    FvbDev->NumBlocks = 10;
   }
   DEBUG((DEBUG_INFO, "After: FvbDev->NumBlocks - %ld\n", FvbDev->NumBlocks));
 
@@ -546,6 +546,7 @@ ProduceFVBProtocolOnBuffer (
   {
     for (BlockIndex2 = 0; BlockIndex2 < PtrBlockMapEntry->NumBlocks; BlockIndex2++) {
       FvbDev->LbaCache[BlockIndex].Base   = LinearOffset;
+      DEBUG((DEBUG_INFO, "Set: FvbDev->LbaCache[%d].Base = %ld\n", BlockIndex, LinearOffset));
       FvbDev->LbaCache[BlockIndex].Length = PtrBlockMapEntry->Length;
       LinearOffset                       += PtrBlockMapEntry->Length;
       BlockIndex++;

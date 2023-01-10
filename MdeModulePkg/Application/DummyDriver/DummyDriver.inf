@@ -15,12 +15,12 @@
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = BreakingBoot
-  MODULE_UNI_FILE                = BreakingBoot.uni
-  FILE_GUID                      = a894f637-ca54-4f7e-890e-6d5248e2bd05
-  MODULE_TYPE                    = UEFI_APPLICATION
+  BASE_NAME                      = DummyDriver
+  MODULE_UNI_FILE                = DummyDriver.uni
+  FILE_GUID                      = c84215aa-5c7f-4875-8666-de17031a859e
+  MODULE_TYPE                    = DXE_DRIVER
   VERSION_STRING                 = 1.0
-  ENTRY_POINT                    = UefiMain
+  ENTRY_POINT                    = DummyDriverEntry
 
 #
 #  This flag specifies whether HII resource section is generated into PE image.
@@ -34,38 +34,20 @@
 #
 
 [Sources]
-  BreakingBoot.c
-  BreakingBootStr.uni
+  DummyDriver.c
+  DummyDriverStr.uni
 
 [Packages]
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
-  ShellPkg/ShellPkg.dec
 
 [LibraryClasses]
-  UefiApplicationEntryPoint
   UefiLib
-  PcdLib
-  BaseMemoryLib
-  UefiBootServicesTableLib
-  UefiRuntimeServicesTableLib
-  DxeServicesTableLib
-  HobLib
-  DebugLib
-  BaseLib
+  UefiDriverEntryPoint
+
 
 [Protocols]
-gEfiShellParametersProtocolGuid
-gEfiFirmwareVolume2ProtocolGuid
-gEfiShellInterfaceGuid
-gEfiDevicePathProtocolGuid
-
-[FeaturePcd]
-  gEfiMdeModulePkgTokenSpaceGuid.PcdBreakingBootPrintEnable   ## CONSUMES
-
-[Pcd]
-  gEfiMdeModulePkgTokenSpaceGuid.PcdBreakingBootPrintString   ## SOMETIMES_CONSUMES
-  gEfiMdeModulePkgTokenSpaceGuid.PcdBreakingBootPrintTimes    ## SOMETIMES_CONSUMES
+  
 
 [UserExtensions.TianoCore."ExtraFiles"]
-  BreakingBootExtra.uni
+  DummyDriverExtra.uni

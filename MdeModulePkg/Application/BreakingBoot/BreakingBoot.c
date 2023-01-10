@@ -1,10 +1,8 @@
 /** @file
   This sample application bases on BreakingBoot PCD setting
   to run the Breaking Boot fuzzer to the UEFI Console.
-
   Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
   SPDX-License-Identifier: BSD-2-Clause-Patent
-
 **/
 
 #include <Uefi.h>
@@ -62,11 +60,8 @@ GLOBAL_REMOVE_IF_UNREFERENCED EFI_STRING_ID  mStringHelpTokenId = STRING_TOKEN (
 
 /**
   Wait for a key to be pressed by user.
-
   @param Key         The key which is pressed by user.
-
   @retval EFI_SUCCESS The function always completed successfully.
-
 **/
 EFI_STATUS
 WaitForKeyStroke (
@@ -94,19 +89,14 @@ WaitForKeyStroke (
 
 /**
   Count the storage space of a Unicode string.
-
   This function handles the Unicode string with NARROW_CHAR
   and WIDE_CHAR control characters. NARROW_HCAR and WIDE_CHAR
   does not count in the resultant output. If a WIDE_CHAR is
   hit, then 2 Unicode character will consume an output storage
   space with size of CHAR16 till a NARROW_CHAR is hit.
-
   If String is NULL, then ASSERT ().
-
   @param String          The input string to be counted.
-
   @return Storage space for the input string.
-
 **/
 
 UINTN
@@ -225,14 +215,11 @@ CustomReadString (
             if (CurrentCursor > 0) {
               CurrentCursor--;
             }
-
             break;
-
           case SCAN_RIGHT:
             if (CurrentCursor < (GetStringWidth (StringPtr) / 2 - 1)) {
               CurrentCursor++;
             }
-
             break;
           */
           case SCAN_ESC:
@@ -281,7 +268,6 @@ CustomReadString (
             for (Index = 0; Index < CurrentCursor; Index++) {
               TempString[Index] = StringPtr[Index];
             }
-
             TempString[Index] = CHAR_NULL;
             StrCatS (TempString, MaxLen, KeyPad);
             StrCpyS (StringPtr, MaxLen, TempString);
@@ -300,13 +286,10 @@ CustomReadString (
 /**
   The user Entry Point for Application. The user code starts with this function
   as the real entry point for the application.
-
   @param[in] ImageHandle    The firmware allocated handle for the EFI image.
   @param[in] SystemTable    A pointer to the EFI System Table.
-
   @retval EFI_SUCCESS       The entry point is executed successfully.
   @retval other             Some error occurs when executing this entry point.
-
 **/
 EFI_STATUS
 EFIAPI
