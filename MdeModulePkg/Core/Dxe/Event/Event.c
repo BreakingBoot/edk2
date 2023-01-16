@@ -384,6 +384,8 @@ CoreCreateEventInternal (
   }
 
   if (EFI_ERROR (Status)) {
+    // MODIFIED
+    DEBUG((DEBUG_ERROR, "FUZZING: The Event Type was Invalid\n"));
     return EFI_INVALID_PARAMETER;
   }
 

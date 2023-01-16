@@ -37,16 +37,27 @@
 
 [Packages]
   MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
   ShellPkg/ShellPkg.dec
 
 [LibraryClasses]
   UefiApplicationEntryPoint
   UefiLib
-  ShellLib
+  PcdLib
+  BaseMemoryLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  DxeServicesTableLib
   HobLib
+  DebugLib
+  BaseLib
 
-[FeaturePcd]
+[Protocols]
+gEfiShellParametersProtocolGuid
+gEfiFirmwareVolume2ProtocolGuid
+gEfiShellInterfaceGuid
+gEfiDevicePathProtocolGuid
 
-[Pcd]
+
 
 

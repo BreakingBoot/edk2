@@ -474,7 +474,7 @@
       gEfiShellPkgTokenSpaceGuid.PcdShellLibAutoInitialize|FALSE
       gEfiMdePkgTokenSpaceGuid.PcdUefiLibMaxPrintBufferSize|8000
   }
-  #ShellPkg/Application/BBClient/BBClient.inf
+  ShellPkg/Application/BBClient/BBClient.inf
 
 !endif
 

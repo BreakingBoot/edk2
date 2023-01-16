@@ -205,6 +205,67 @@ FuzzLoadImage(
   return Status;
 }
 
+EFI_STATUS
+EFIAPI
+FuzzCloseEvent(
+  IN UINTN UserType,
+  IN UINTN UserTpl
+)
+{
+  EFI_STATUS Status;
+  EFI_EVENT DummyEvent;
+  UINT32 Type;
+  EFI_TPL NotifyTpl; 
+  EFI_EVENT_NOTIFY NotifyFunction; // Optional
+  VOID *NotifyContext; // Optional
+
+  //
+  // Set the values for the DummyEvent to create
+  //
+  // Random Notify Type
+  switch(UserType%8)
+  {
+    case 0:
+      Type = EVT_TIMER | EVT_NOTIFY_SIGNAL;
+      break;
+    case 1:
+      Type = EVT_TIMER;
+      break;
+    case 2:
+      Type = EVT_NOTIFY_WAIT;
+      break;
+    case 3:
+      Type = EVT_NOTIFY_SIGNAL;
+      break;
+    case 4:
+      Type = EVT_SIGNAL_EXIT_BOOT_SERVICES;
+      break;
+    case 5:
+      Type = EVT_SIGNAL_VIRTUAL_ADDRESS_CHANGE;
+      break;
+    case 6:
+      Type = 0x00000000;
+      break;
+    case 7:
+      Type = EVT_TIMER | EVT_NOTIFY_WAIT;
+      break;
+  }
+  // Needs to be of type TPL_APPLICATION, TPL_CALLBACK, and TPL_NOTIFY
+  NotifyTpl = (EFI_TPL) UserTpl;
+  // Set as NULL but can be set to a custom value
+  NotifyFunction = EfiEventEmptyFunction; 
+  NotifyContext = NULL;
+
+
+  Status = gBS->CreateEvent(Type, NotifyTpl, NotifyFunction, NotifyContext, &DummyEvent);
+  if(EFI_ERROR(Status))
+  {
+    DEBUG ((DEBUG_ERROR, "FAILED Creating DummyEvent of Type: %x with a Status: %r\n", Type, Status));
+  }
+  Status = gBS->CloseEvent(DummyEvent);
+
+  return Status;
+}
 
 /*
 EFI_STATUS
@@ -229,8 +290,8 @@ VerifyParameters (
 {
   //EFI_CORE_DRIVER_ENTRY *DriverEntry;
   EFI_HANDLE ReturnImageHandle;
-  //EFI_STATUS Status;
-  if(Argc > 2)
+  EFI_STATUS Status;
+  if(Argc > 1)
   {
     switch(StrDecimalToUintn(Argv[1]))
     {
@@ -238,7 +299,22 @@ VerifyParameters (
         //Status = gDS->ProcessFirmwareVolume((VOID *) FwHeader, (MAX_UINT32), &FvProtocolHandle);
         break;
       case CLOSE_EVENT:
-        //Status = gBS->CloseEvent();
+        if(Argc != 4)
+        {
+          Print(L"Need 1 Argument for CloseEvent\n");
+          Print(L"BBClient.efi 1 <EventType> <NotifyTPL>\n");
+          Print(L"    <EventType> : The type of event to be created\n");
+          Print(L"    <NotifyTPL> : The task priority level of the event\n");
+          break;
+        }
+        UINTN Type = StrDecimalToUintn(Argv[2]);
+        UINTN NotifyTpl = StrDecimalToUintn(Argv[3]);
+        DEBUG ((DEBUG_ERROR, "FUZZING: CoreCloseEvent(%d, %d)\n", Type, NotifyTpl));
+        Status = FuzzCloseEvent(Type, NotifyTpl);
+        if(EFI_ERROR(Status))
+        {
+          DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));
+        }
         break;
       case LOAD_IMAGE:
         // Check that the correct input parameters were entered
@@ -249,8 +325,7 @@ VerifyParameters (
         if(Argc < 6)
         {
           Print(L"Need 5 Arguments for LoadImage\n");
-          HelpMenu();
-          return EFI_ABORTED;
+          break;
         }
         BOOLEAN BootPolicy = (BOOLEAN) StrDecimalToUintn(Argv[2]);
         if(StrDecimalToUintn(Argv[3]))
@@ -268,6 +343,11 @@ VerifyParameters (
         break;
     }
   }
+  else
+  {
+    HelpMenu();
+  }
+
   return EFI_SUCCESS;
 }
 
