@@ -506,6 +506,7 @@ ProduceFVBProtocolOnBuffer (
   //
   
   FvbDev->NumBlocks = 0;
+  DEBUG((DEBUG_INFO, "Size - %d\n", sizeof(FwVolHeader->BlockMap)));
   for (PtrBlockMapEntry = FwVolHeader->BlockMap;
        PtrBlockMapEntry->NumBlocks != 0;
        PtrBlockMapEntry++)
@@ -516,10 +517,6 @@ ProduceFVBProtocolOnBuffer (
   /////////////////////////////////////////////////////////////////////////
   //        MODIFIED
   /////////////////////////////////////////////////////////////////////////
-  if(Length == MAX_UINT32)
-  {
-    FvbDev->NumBlocks = 10;
-  }
   DEBUG((DEBUG_INFO, "After: FvbDev->NumBlocks - %ld\n", FvbDev->NumBlocks));
 
   //
@@ -546,7 +543,6 @@ ProduceFVBProtocolOnBuffer (
   {
     for (BlockIndex2 = 0; BlockIndex2 < PtrBlockMapEntry->NumBlocks; BlockIndex2++) {
       FvbDev->LbaCache[BlockIndex].Base   = LinearOffset;
-      DEBUG((DEBUG_INFO, "Set: FvbDev->LbaCache[%d].Base = %ld\n", BlockIndex, LinearOffset));
       FvbDev->LbaCache[BlockIndex].Length = PtrBlockMapEntry->Length;
       LinearOffset                       += PtrBlockMapEntry->Length;
       BlockIndex++;
@@ -692,7 +688,6 @@ CoreProcessFirmwareVolume (
   EFI_STATUS  Status;
 
   *FVProtocolHandle = NULL;
-  DEBUG((DEBUG_INFO, "CoreProcessFirmwareVolume\n"));
   Status            = ProduceFVBProtocolOnBuffer (
                         (EFI_PHYSICAL_ADDRESS)(UINTN)FvHeader,
                         (UINT64)Size,
