@@ -110,6 +110,26 @@ CoreFvToDevicePath (
 
   return FileNameDevicePath;
 }
+/*
+EFI_DEVICE_PATH_PROTOCOL *
+DevicePathFromHandle (
+   EFI_HANDLE                      Handle
+  )
+{
+  EFI_DEVICE_PATH_PROTOCOL  *DevicePath;
+  EFI_STATUS                Status;
+
+  Status = gBS->HandleProtocol (
+                  Handle,
+                  &gEfiDevicePathProtocolGuid,
+                  (VOID *) &DevicePath
+                  );
+  if (EFI_ERROR (Status)) {
+    DevicePath = NULL;
+  }
+  return DevicePath;
+}
+*/
 
 EFI_STATUS
 EFIAPI
@@ -267,17 +287,109 @@ FuzzCloseEvent(
   return Status;
 }
 
-/*
+
+STATIC
+UINT16
+FvBufCalculateSum16 (
+  IN UINT16       *Buffer,
+  IN UINTN        Size
+  )
+{
+  UINTN   Index;
+  UINT16  Sum;
+
+  Sum = 0;
+
+  //
+  // Perform the word sum for buffer
+  //
+  for (Index = 0; Index < Size; Index++) {
+    Sum = (UINT16) (Sum + Buffer[Index]);
+  }
+
+  return (UINT16) Sum;
+}
+
+
+STATIC
+UINT16
+FvBufCalculateChecksum16 (
+  IN UINT16       *Buffer,
+  IN UINTN        Size
+  )
+{
+  return (UINT16)(0x10000 - FvBufCalculateSum16 (Buffer, Size));
+}
+
+
 EFI_STATUS
 EFIAPI
-CreateDummyFv(
-
+FuzzProcessFirmwareVolume(
+  IN UINT64 InputLength,
+  IN EFI_FVB_ATTRIBUTES_2 InputAttributes,
+  IN UINT32 NumBlocks,
+  IN UINT32 BlockLength,
+  IN EFI_GUID Guid
 )
 {
   EFI_STATUS Status;
+  EFI_HANDLE FvProtocolHandle;
+  EFI_FIRMWARE_VOLUME_HEADER FwHeader;
+
+  // FW Header Info
+  // COMPLETED
+  EFI_FV_BLOCK_MAP_ENTRY BlockMap;
+  BlockMap.Length = BlockLength;
+  BlockMap.NumBlocks = NumBlocks;
+  EFI_FV_BLOCK_MAP_ENTRY EmptyBlock;
+  EmptyBlock.Length = 0;
+  EmptyBlock.NumBlocks = 0;
+  UINT64 FvLength = InputLength;
+  UINT32 Signature = EFI_FVH_SIGNATURE;
+  EFI_FVB_ATTRIBUTES_2 Attributes = InputAttributes;
+  UINT8 Reserved = 0;
+  UINT8 Revision = EFI_FVH_REVISION;
+  UINT16 HeaderLength = (UINT16) (((UINTN) &(BlockMap)) - (UINTN) InputLength);
+  UINT16 Checksum = FvBufCalculateChecksum16((UINT16*) &FwHeader, HeaderLength / sizeof (UINT16));
+  EFI_GUID FileSystemGuid = Guid;
+
+  // INCOMPLETED
+  UINT16 ExtHeaderOffset = 0; // May need to change
+  
+
+  gBS->SetMem(&(FwHeader.ZeroVector), 16, 0);
+  FwHeader.FileSystemGuid = FileSystemGuid;
+  FwHeader.FvLength = FvLength;
+  FwHeader.Signature = Signature;
+  FwHeader.Attributes = Attributes;
+  FwHeader.HeaderLength = HeaderLength;
+  FwHeader.Checksum = Checksum;
+  FwHeader.ExtHeaderOffset = ExtHeaderOffset;
+  FwHeader.Reserved[0] = Reserved;
+  FwHeader.Revision = Revision;
+  FwHeader.BlockMap[0] = BlockMap;
+  FwHeader.BlockMap[1] = BlockMap;
+  FwHeader.BlockMap[2] = EmptyBlock;
+
+  DEBUG ((DEBUG_ERROR, "FUZZING: ZeroVector - %d\n", FwHeader.ZeroVector[0]));
+  DEBUG ((DEBUG_ERROR, "FUZZING: FileSystemGuid - %x\n", FwHeader.FileSystemGuid));
+  DEBUG ((DEBUG_ERROR, "FUZZING: FvLength - %d\n", FwHeader.FvLength));
+  DEBUG ((DEBUG_ERROR, "FUZZING: Signature - %d\n", FwHeader.Signature));
+  DEBUG ((DEBUG_ERROR, "FUZZING: Attributes - %d\n", FwHeader.Attributes));
+  DEBUG ((DEBUG_ERROR, "FUZZING: HeaderLength - %d\n", FwHeader.HeaderLength));
+  DEBUG ((DEBUG_ERROR, "FUZZING: Checksum - %d\n", FwHeader.Checksum));
+  DEBUG ((DEBUG_ERROR, "FUZZING: ExtHeaderOffset - %d\n", FwHeader.ExtHeaderOffset));
+  DEBUG ((DEBUG_ERROR, "FUZZING: Reserved - %d\n", FwHeader.Reserved[0]));
+  DEBUG ((DEBUG_ERROR, "FUZZING: Revision - %d\n", FwHeader.Revision));
+  DEBUG ((DEBUG_ERROR, "FUZZING: BlockMap(NumBlocks) - %d\n", FwHeader.BlockMap[1].NumBlocks));
+  DEBUG ((DEBUG_ERROR, "FUZZING: BlockMap(Length) - %d\n", FwHeader.BlockMap[1].Length));
+  DEBUG((DEBUG_INFO, "Size - %d\n", sizeof(FwHeader.BlockMap)));
+
+  Status = gDS->ProcessFirmwareVolume((VOID *) &FwHeader, FwHeader.FvLength, &FvProtocolHandle);
+
   return Status;
 }
-*/
+
 
 // Function that checks parameters and fuzzes the implemented services
 EFI_STATUS
@@ -291,17 +403,56 @@ VerifyParameters (
   //EFI_CORE_DRIVER_ENTRY *DriverEntry;
   EFI_HANDLE ReturnImageHandle;
   EFI_STATUS Status;
+  EFI_PEI_HOB_POINTERS FvHob;
+  EFI_FIRMWARE_VOLUME_HEADER *FwHeader;
+  EFI_HANDLE FvProtocolHandle;
   if(Argc > 1)
   {
     switch(StrDecimalToUintn(Argv[1]))
     {
-      case PROCESS_FIRMWARE_VOLUME: //
-        //Status = gDS->ProcessFirmwareVolume((VOID *) FwHeader, (MAX_UINT32), &FvProtocolHandle);
+      case PROCESS_FIRMWARE_VOLUME: // INCOMPLETE
+        if(Argc != 6)
+        {
+          Print(L"Need 5 Arguments for ProcessFirmwareImage\n");
+          Print(L"BBClient.efi 0 <InputLength> <InputAttributes> <NumBlocks> <BlockLength>\n");
+          Print(L"    <InputLength>     : Firmware Volume Image Length\n");
+          Print(L"    <InputAttributes> : Specific FV attributes\n");
+          Print(L"    <NumBlocks>       : Number of Blocks for FV BlockMap\n");
+          Print(L"    <BlockLength>     : Length of each Block in the BlockMap\n");
+          break;
+        }
+        UINT64 InputLength = StrDecimalToUint64(Argv[2]);
+        EFI_FVB_ATTRIBUTES_2 InputAttributes = (EFI_FVB_ATTRIBUTES_2) StrDecimalToUint64(Argv[3]);
+        UINT32 NumBlocks = (UINT32) StrDecimalToUint64(Argv[4]);
+        UINT32 BlockLength = (UINT32) StrDecimalToUint64(Argv[5]);
+
+        FvHob.Raw = GetHobList();
+        FvHob.Raw = GetNextHob(EFI_HOB_TYPE_FV, FvHob.Raw);
+        FwHeader = (EFI_FIRMWARE_VOLUME_HEADER *) (UINTN) ((EFI_PHYSICAL_ADDRESS)(UINTN)FvHob.FirmwareVolume->BaseAddress);    
+        DEBUG ((DEBUG_ERROR, "NORMAL: ZeroVector - %d\n", FwHeader->ZeroVector[0]));
+        DEBUG ((DEBUG_ERROR, "NORMAL: FileSystemGuid - %x\n", FwHeader->FileSystemGuid));
+        DEBUG ((DEBUG_ERROR, "NORMAL: FvLength - %d\n", FwHeader->FvLength));
+        DEBUG ((DEBUG_ERROR, "NORMAL: Signature - %d\n", FwHeader->Signature));
+        DEBUG ((DEBUG_ERROR, "NORMAL: Attributes - %d\n", FwHeader->Attributes));
+        DEBUG ((DEBUG_ERROR, "NORMAL: HeaderLength - %d\n", FwHeader->HeaderLength));
+        DEBUG ((DEBUG_ERROR, "NORMAL: Checksum - %d\n", FwHeader->Checksum));
+        DEBUG ((DEBUG_ERROR, "NORMAL: ExtHeaderOffset - %d\n", FwHeader->ExtHeaderOffset));
+        DEBUG ((DEBUG_ERROR, "NORMAL: Reserved - %d\n", FwHeader->Reserved[0]));
+        DEBUG ((DEBUG_ERROR, "NORMAL: Revision - %d\n", FwHeader->Revision));
+        DEBUG ((DEBUG_ERROR, "NORMAL: BlockMap(NumBlocks) - %d\n", FwHeader->BlockMap[1].NumBlocks));
+        DEBUG ((DEBUG_ERROR, "NORMAL: BlockMap(Length) - %d\n", FwHeader->BlockMap[1].Length));
+        DEBUG((DEBUG_INFO, "Size - %d\n", sizeof(FwHeader->BlockMap)));
+        gDS->ProcessFirmwareVolume((VOID *) FwHeader, FwHeader->FvLength, &FvProtocolHandle);
+        Status = FuzzProcessFirmwareVolume(InputLength, InputAttributes, NumBlocks, BlockLength, FwHeader->FileSystemGuid);
+        if(EFI_ERROR(Status))
+        {
+          DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));
+        }
         break;
-      case CLOSE_EVENT:
+      case CLOSE_EVENT: // COMPLETED
         if(Argc != 4)
         {
-          Print(L"Need 1 Argument for CloseEvent\n");
+          Print(L"Need 2 Arguments for CloseEvent\n");
           Print(L"BBClient.efi 1 <EventType> <NotifyTPL>\n");
           Print(L"    <EventType> : The type of event to be created\n");
           Print(L"    <NotifyTPL> : The task priority level of the event\n");
@@ -316,7 +467,7 @@ VerifyParameters (
           DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));
         }
         break;
-      case LOAD_IMAGE:
+      case LOAD_IMAGE: // INCOMPLETE
         // Check that the correct input parameters were entered
         //   Argv[2] - BootPolicy (TRUE/FALSE)
         //   Argv[3] - Load from memory (TRUE/FALSE)
@@ -336,7 +487,11 @@ VerifyParameters (
         VOID *SourceBuffer = NULL;
         UINTN SourceSize = StrDecimalToUintn(Argv[4]);
         UINTN DriverSize = StrDecimalToUintn(Argv[5]);
-        FuzzLoadImage(BootPolicy, ImageHandle, SourceBuffer, SourceSize, DriverSize, ReturnImageHandle);
+        Status = FuzzLoadImage(BootPolicy, ImageHandle, SourceBuffer, SourceSize, DriverSize, ReturnImageHandle);
+        if(EFI_ERROR(Status))
+        {
+          DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));
+        }
         break;
       default:
         HelpMenu();
