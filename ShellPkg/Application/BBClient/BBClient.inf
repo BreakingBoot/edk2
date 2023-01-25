@@ -34,6 +34,13 @@
 
 [Sources]
   BBClient.c
+  BBClientUtilities.c
+  BBClient.h
+  BBClientFuzz.h
+  BBClientUtilities.h
+  FuzzCloseEvent.c
+  FuzzLoadImage.c 
+  FuzzProcessFirmwareVolume.c 
 
 [Packages]
   MdePkg/MdePkg.dec
@@ -53,10 +60,10 @@
   BaseLib
 
 [Protocols]
-gEfiShellParametersProtocolGuid
-gEfiFirmwareVolume2ProtocolGuid
-gEfiShellInterfaceGuid
-gEfiDevicePathProtocolGuid
+  gEfiShellParametersProtocolGuid
+  gEfiFirmwareVolume2ProtocolGuid
+  gEfiShellInterfaceGuid
+  gEfiDevicePathProtocolGuid
 
 
 
