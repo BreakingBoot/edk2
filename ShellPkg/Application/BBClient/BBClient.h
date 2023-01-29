@@ -1,3 +1,6 @@
+#ifndef _BBCLIENT_H_
+#define _BBCLIENT_H_
+
 #include <Uefi.h>
 #include <Library/UefiLib.h>
 #include <Library/UefiApplicationEntryPoint.h>
@@ -47,3 +50,5 @@
 #define PROCESS_FIRMWARE_VOLUME 0
 #define CLOSE_EVENT 1
 #define LOAD_IMAGE 2
+
+#endif

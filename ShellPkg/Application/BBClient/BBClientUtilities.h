@@ -1,3 +1,6 @@
+#ifndef _BBCLIENTUTILITIES_H_
+#define _BBCLIENTUTILITIES_H_
+
 #include "BBClient.h"
 
 typedef struct {
@@ -52,3 +55,5 @@ CreateDummyFirmwareVolume(
     IN UINT32 NumBlocks,
     IN UINT32 BlockLength
 );
+
+#endif
