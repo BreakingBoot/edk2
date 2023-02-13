@@ -375,6 +375,9 @@
   MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteDxe.inf
   EmulatorPkg/PlatformSmbiosDxe/PlatformSmbiosDxe.inf
   EmulatorPkg/TimerDxe/Timer.inf
+  EmulatorPkg/HelloWorldDxe/HelloWorld.inf
+  EmulatorPkg/HeapManipDxe/HeapManip.inf
+  EmulatorPkg/Example1_Driver_Lockbox/Example1_Driver_Lockbox.inf 
 
 !if $(SECURE_BOOT_ENABLE) == TRUE
   SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
@@ -409,6 +412,9 @@
       NULL|MdeModulePkg/Library/BootMaintenanceManagerUiLib/BootMaintenanceManagerUiLib.inf
   }
   MdeModulePkg/Application/BootManagerMenuApp/BootManagerMenuApp.inf
+  EmulatorPkg/TestApp/TestApp.inf
+  EmulatorPkg/ManipApp/ManipApp.inf
+  EmulatorPkg/Example1_App/Example1_App.inf
 
   MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
   #{
@@ -430,7 +436,6 @@
   EmulatorPkg/EmuSnpDxe/EmuSnpDxe.inf
 
   MdeModulePkg/Application/HelloWorld/HelloWorld.inf
-  MdeModulePkg/Application/BreakingBoot/BreakingBoot.inf
 
   MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
   MdeModulePkg/Universal/HiiDatabaseDxe/HiiDatabaseDxe.inf
@@ -474,8 +479,7 @@
       gEfiShellPkgTokenSpaceGuid.PcdShellLibAutoInitialize|FALSE
       gEfiMdePkgTokenSpaceGuid.PcdUefiLibMaxPrintBufferSize|8000
   }
-  ShellPkg/Application/BBClient/BBClient.inf
-
+ShellPkg/Application/BBClient/BBClient.inf
 !endif
 
 !include NetworkPkg/Network.dsc.inc
