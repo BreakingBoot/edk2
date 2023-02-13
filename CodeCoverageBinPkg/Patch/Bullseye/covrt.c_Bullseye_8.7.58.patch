@@ -1,0 +1,331 @@
+Index: covrt.c
+===================================================================
+--- covrt.c	(revision 2085)
++++ covrt.c	(working copy)
+@@ -1,3 +1,15 @@
++#if _BullseyeCoverage
++  #pragma BullseyeCoverage off
++#endif
++
++// Disable the unreferenced variable warning.
++#pragma warning ( disable : 4100 )
++
++// Include EFI specific API and Macros
++#include "TianoLib.h"
++#include "libcov.h"
++#include "cmn-autoSave.h"
++
+ /***********************************************************************
+  * $Revision: 13641 $ $Date: 2013-04-16 08:06:10 -0700 (Tue, 16 Apr 2013) $
+  *
+@@ -7,7 +19,6 @@
+  *
+  * Do not compile this file directly. It should be included into a platform-specific source file.
+  */
+-
+ #if _MSC_VER
+ 	#pragma check_stack(off)
+ #endif
+@@ -244,10 +255,10 @@
+ 	/* Set pathList to comma separated list of paths */
+ 	const char* pathList = covFile_user;
+ 	if (pathList == NULL) {
+-		pathList = getenv("COVFILELIST");
++		pathList = CovFileGetEnv("COVFILELIST");
+ 	}
+ 	if (pathList == NULL && index == 0) {
+-		pathList = getenv("COVFILE");
++		pathList = CovFileGetEnv("COVFILE");
+ 	}
+ 	if (pathList == NULL) {
+ 		pathList = covFile_buf;
+@@ -353,7 +364,6 @@
+ 			/* Format the message */
+ 			static char buf[128 + PATH_MAX];
+ 			unsigned bi;
+-			const char* coverr;
+ 			const char* format = error->message;
+ 			unsigned fi;
+ 			va_list va;
+@@ -386,29 +396,8 @@
+ 				}
+ 			}
+ 			va_end(va);
+-			/* Write the error message */
+-			coverr = getenv("COVERR");
+-			if (coverr == NULL) {
+-				/* Write to standard error */
+-				buf[bi++] = '\n';
+-				buf[bi] = '\0';
+-				write(2, buf, bi);
+-			} else {
+-				/* Append message to file */
+-				const int fd = open(coverr, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
+-				if (fd == -1) {
+-					static const char s[] = "Cannot open error log. Check COVERR\n";
+-					write(2, s, sizeof(s) - 1);
+-				} else {
+-					#if _WIN32
+-						buf[bi++] = '\r';
+-					#endif
+-					buf[bi++] = '\n';
+-					lseek(fd, 0L, SEEK_END);
+-					write(fd, buf, bi);
+-					close(fd);
+-				}
+-			}
++			// print the error message
++			DebugPrint (DEBUG_INFO|DEBUG_ERROR, "!!!!%a!!!!\n", buf);
+ 		}
+ #endif
+ 	}
+@@ -431,11 +420,11 @@
+ 	if (error->level < 3) {
+ 		int n;
+ 		do {
+-			n = (int)read(File.fd, buf + total, length - total);
++			n = (int)CovFileRead(File.fd, buf + total, length - total);
+ 			if (n < 0) {
+-				if (errno != EINTR) {
+-					const int errno_ = errno;
+-					error_report(&error_io, path_current, (unsigned)lseek(File.fd, 0, SEEK_CUR), errno_);
++				if (CovError != EINTR) {
++					const int errno_ = CovError;
++					error_report(&error_io, path_current, (unsigned)CovFileLseek(File.fd, 0, SEEK_CUR), errno_);
+ 					break;
+ 				}
+ 			} else {
+@@ -450,9 +439,9 @@
+ static void file_seek(unsigned offset)
+ {
+ 	if (error->level < 3 &&
+-		lseek(File.fd, (off_t)offset, SEEK_SET) == (off_t)-1)
++		CovFileLseek(File.fd, (off_t)offset, SEEK_SET) == (off_t)-1)
+ 	{
+-		error_report(&error_io, path_current, offset, errno);
++		error_report(&error_io, path_current, offset, CovError);
+ 	}
+ }
+ 
+@@ -475,20 +464,9 @@
+ 
+ static void fileLock(short type, unsigned offset, unsigned length)
+ {
+-	if (error->level < 3) {
+-		int status;
+-		struct flock fl;
+-		fl.l_whence = SEEK_SET;
+-		fl.l_start = (off_t)offset;
+-		fl.l_len = (off_t)length;
+-		fl.l_type = type;
+-		do {
+-			status = fcntl(File.fd, F_SETLKW, &fl);
+-		} while (status != 0 && errno == EINTR);
+-		if (status != 0 && errno != ENOSYS) {
+-			error_report(&error_fcntl, path_current, errno);
+-		}
+-	}
++  if (error->level < 3) {
++    CovError = ENOSYS;
++  }
+ }
+ 
+ /*------------------------- Private Function ---------------------------
+@@ -527,11 +505,11 @@
+ 	if (error->level < 3 && File.buf_n != 0) {
+ 		int n;
+ 		do {
+-			n = (int)write(File.fd, File.buf + total, File.buf_n - total);
++			n = (int)CovFileWrite(File.fd, File.buf + total, File.buf_n - total);
+ 			if (n < 0) {
+-				if (errno != EINTR) {
+-					const int errno_ = errno;
+-					error_report(&error_io, path_current, (unsigned)lseek(File.fd, 0, SEEK_CUR), errno_);
++				if (CovError != EINTR) {
++					const int errno_ = CovError;
++					error_report(&error_io, path_current, (unsigned)CovFileLseek(File.fd, 0, SEEK_CUR), errno_);
+ 					break;
+ 				}
+ 			} else {
+@@ -591,22 +569,13 @@
+  */
+ static int cov_open(unsigned* fileId)
+ {
+-	File.fd = open(path_current, O_RDWR, 0);
+-	if (File.fd == 2) {
+-		/* Cannot use file descriptor 2 because we write errors to file descriptor 2 */
+-		File.fd = open(path_current, O_RDWR, 0);
+-		close(2);
+-	}
++	File.fd = CovFileOpen(path_current, O_RDWR, 0);
+ 	if (File.fd == -1) {
+-		const Error* e = &error_open;
+-		if (getenv("COVFILE") == NULL) {
+-			e = &error_openDefault;
+-		}
+-		error_report(e, path_current, errno);
++      //Do nothing
++		;
+ 	} else {
+ 		unsigned i;
+ 		unsigned directory;
+-		fileLock(F_RDLCK, 0, fileHeaderSize);
+ 		File.offset = 0;
+ 		File.limit = fileHeaderSize;
+ 		buf_fill();
+@@ -624,9 +593,6 @@
+ 			/* no directory - empty coverage file */
+ 			error_report(&error_fileEmpty, path_current);
+ 		}
+-		/* Wait for run-time versions prior to 7.13.26 */
+-		fileLock(F_RDLCK, directory, 1);
+-		fileLock(F_UNLCK, directory, 1);
+ 		/* Get offset of first directory entry */
+ 		Dir_next = directory + (unsigned)sizeof("Dir 12345678");
+ 	}
+@@ -642,9 +608,8 @@
+ static void cov_close(void)
+ {
+ 	/* Unlock directory */
+-	fileLock(F_UNLCK, 0, fileHeaderSize);
+-	if (close(File.fd) != 0) {
+-		error_report(&error_io, path_current, 0, errno);
++	if (CovFileClose(File.fd) != 0) {
++		error_report(&error_io, path_current, 0, CovError);
+ 	}
+ }
+ 
+@@ -725,8 +690,6 @@
+ 	/* Number of events in file */
+ 	unsigned i;
+ 	const unsigned char* varData = p->var->data;
+-	/* Lock file for writing */
+-	fileLock(F_WRLCK, offset, 1);
+ 	/* get size */
+ 	File.limit = file_read_hex(offset + (unsigned)sizeof("Obj"));
+ 	File.offset = offset;
+@@ -786,8 +749,6 @@
+ 		error_report(&error_fileMismatch, path_current, fileId, p->basename, p->id, i, p->data_n);
+ 	}
+ 	buf_flush();
+-	/* Release write lock */
+-	fileLock(F_UNLCK, offset, 1);
+ }
+ 
+ static void saveCwd(void)
+@@ -801,7 +762,7 @@
+ 			const int isAbsolute = path[0] == '/';
+ 		#endif
+ 		if (!isAbsolute) {
+-			if (getcwd(covFile_buf, sizeof(covFile_buf)) == NULL) {
++			if (CovFileGetCwd(covFile_buf, sizeof(covFile_buf)) == NULL) {
+ 				covFile_buf[0] = '\0';
+ 			} else {
+ 				/* Append a slash if not already present */
+@@ -1003,11 +964,9 @@
+  */
+ void Libcov_cdecl cov_term(void)
+ {
+-	autoSave_join();
+ 	cov_write();
+ 	/* Unlink chain, to allow restarting, as is possible on VxWorks */
+ 	cov_unlink();
+-	cov_atomic_unlock(&probe_init_once);
+ 	cov_atomic_unlock(&saveCwd_once);
+ }
+ #endif /* !COVRT_PASSIVE */
+@@ -1089,7 +1048,8 @@
+ 			error_report(&error_corruptBss, "(probe)", "");
+ 		}
+ 		#if !COVRT_PASSIVE
+-			if (cov_syscall && isReady() && cov_atomic_tryLock(&probe_init_once)) {
++			if (cov_syscall && isReady()) {
++				if (cov_atomic_tryLock(&probe_init_once)){
+ 				if (!isForkChild) {
+ 					/* Term_count is non-zero if the program has any static
+ 					 * ctors, in which case atexit is not needed. Also, in
+@@ -1097,15 +1057,19 @@
+ 					 * library may not be initialized yet.
+ 					 */
+ 					if (Term_count == 0) {
++						
+ 						/* Not a C++ program, register termination with atexit */
+-						if (atexit(cov_term) != 0 && errno != ENOSYS) {
+-							error_report(&error_atexit, errno);
++					if (CovFileExit(cov_term) != 0 && CovError != ENOSYS) {
++						error_report(&error_atexit, CovError);
+ 						}
++						
+ 					}
+ 					#if Libcov_posix && !Libcov_noAutoSave
+ 						pthread_atfork(NULL, NULL, atfork);
+ 					#endif
+ 				}
++				cov_atomic_unlock(&probe_init_once);
++				}
+ 				isForkChild = 0;
+ 				if (autoSave_create() != 0) {
+ 					error_report(&error_threadCreate);
+@@ -1265,7 +1229,7 @@
+ 	const CovObject* cov_list_copy = NULL;
+ 	static enum { notSet, setFalse, setTrue } enable;
+ 	int isBusy = 0;
+-	const int errnoSave = errno;
++	const int errnoSave = CovError;
+ 	const char* covnosave;
+ 	cov_check();
+ 	if (error->level < 4) {
+@@ -1283,7 +1247,7 @@
+ 	switch (enable) {
+ 	case notSet:
+ 		enable = setTrue;
+-		covnosave = getenv("COVNOSAVE");
++		covnosave = CovFileGetEnv("COVNOSAVE");
+ 		if (covnosave != NULL && covnosave[0] == '1') {
+ 			enable = setFalse;
+ 		}
+@@ -1303,18 +1267,15 @@
+ 			staticImage.covWriteLock = &covWriteLock;
+ 		#endif
+ 		for (;;) {
+-			struct timespec rqt;
+ 			isLock = cov_atomic_tryLock(&covWriteLock);
+ 			if (isLock) {
+ 				break;
+ 			}
+-			/* Sleep for 0.01s */
+-			rqt.tv_sec = 0;
+-			rqt.tv_nsec = 10000000;
+ 			/*   Repeat if interrupted by a signal */
+ 			do {
+-				status = nanosleep(&rqt, NULL);
+-			} while (status != 0 && errno == EINTR);
++		      CovError = ENOSYS;
++              status      = -1;
++			} while (status != 0 && CovError == EINTR);
+ 			/*   If nanosleep is not working */
+ 			if (status != 0) {
+ 				break;
+@@ -1345,8 +1306,11 @@
+ 								p->var->is_found = 1;
+ 								objectsFound++;
+ 								if (events_count(p) > p->var->events_written) {
+-									object_write(p, obj_offset, fileId);
+-								}
++									while 
++									(!cov_atomic_tryLock(&cov_file_write_lock));
++									  object_write(p, obj_offset, fileId);
++									  cov_atomic_unlock(&cov_file_write_lock);
++								}   
+ 								/* Do not stop the loop. It is possible to have more than one copy of the same object file in memory */
+ 							}
+ 						}
+@@ -1382,7 +1346,7 @@
+ 			status = error_busy.number;
+ 		}
+ 	}
+-	errno = errnoSave;
++	CovError = errnoSave;
+ 	return status;
+ #endif
+ }

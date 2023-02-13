@@ -1,0 +1,172 @@
+Index: Nt32Pkg.dsc
+===================================================================
+--- Nt32Pkg.dsc	(revision 14443)
++++ Nt32Pkg.dsc	(working copy)
+@@ -274,6 +274,29 @@
+ #
+ ###################################################################################################
+ [Components.IA32]
++  #
++  # Code Coverage module
++  #
++!ifdef $(ENCOV) 
++  CodeCoverageBinPkg/CodeCoveragePei/CodeCoveragePei.inf {
++    <LibraryClasses>
++    !if $(ITSCOV_VS2008_ENABLE) == TRUE
++	  CodeCoveragePeimLib|CodeCoverageBinPkg/Library/VS2008/CodeCoveragePeimLib/CodeCoveragePeimLib.inf
++    !endif
++  }
++  CodeCoverageBinPkg/CodeCoverageDxe/CodeCoverageDxe.inf {
++    <LibraryClasses>
++    !if $(ITSCOV_VS2008_ENABLE) == TRUE
++	  CodeCoverageDriverLib|CodeCoverageBinPkg/Library/VS2008/CodeCoverageDriverLib/CodeCoverageDriverLib.inf
++    !endif
++  }
++  CodeCoverageBinPkg/CovResetSystem/CovResetSystem.inf {
++    <LibraryClasses>
++    !if $(ITSCOV_VS2008_ENABLE) == TRUE
++	  CovResetSystemLib|CodeCoverageBinPkg/Library/VS2008/CovResetSystemLib/CovResetSystemLib.inf
++    !endif
++  }
++!endif
+   ##
+   #  SEC Phase modules
+   ##
+Index: Nt32Pkg.fdf
+===================================================================
+--- Nt32Pkg.fdf	(revision 14443)
++++ Nt32Pkg.fdf	(working copy)
+@@ -27,10 +27,10 @@
+ ################################################################################
+ [FD.Nt32]
+ BaseAddress   = 0x0|gEfiNt32PkgTokenSpaceGuid.PcdWinNtFdBaseAddress  #The base address of the FLASH Device.
+-Size          = 0x002a0000                                           #The size in bytes of the FLASH Device
++Size          = 0x004c0000                                           #The size in bytes of the FLASH Device
+ ErasePolarity = 1
+ BlockSize     = 0x10000
+-NumBlocks     = 0x2a
++NumBlocks     = 0x4c
+ 
+ ################################################################################
+ #
+@@ -47,11 +47,11 @@
+ # RegionType <FV, DATA, or FILE>
+ #
+ ################################################################################
+-0x00000000|0x00280000
++0x00000000|0x004a0000
+ gEfiNt32PkgTokenSpaceGuid.PcdWinNtFlashFvRecoveryBase|gEfiNt32PkgTokenSpaceGuid.PcdWinNtFlashFvRecoverySize
+ FV = FvRecovery
+ 
+-0x00280000|0x0000c000
++0x004a0000|0x0000c000
+ gEfiNt32PkgTokenSpaceGuid.PcdWinNtFlashNvStorageVariableBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize
+ #NV_VARIABLE_STORE
+ DATA = {
+@@ -92,11 +92,11 @@
+   0x5A, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+ }
+ 
+-0x0028c000|0x00002000
++0x004ac000|0x00002000
+ #NV_EVENT_LOG
+ gEfiNt32PkgTokenSpaceGuid.PcdWinNtFlashNvStorageEventLogBase|gEfiNt32PkgTokenSpaceGuid.PcdWinNtFlashNvStorageEventLogSize
+ 
+-0x0028e000|0x00002000
++0x004ae000|0x00002000
+ gEfiNt32PkgTokenSpaceGuid.PcdWinNtFlashNvStorageFtwWorkingBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize
+ #NV_FTW_WORKING
+ DATA = {
+@@ -110,7 +110,7 @@
+   0xE0, 0x1F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+ }
+ 
+-0x00290000|0x00010000
++0x004b0000|0x00010000
+ #NV_FTW_SPARE
+ gEfiNt32PkgTokenSpaceGuid.PcdWinNtFlashNvStorageFtwSpareBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize
+ 
+@@ -169,6 +169,13 @@
+ APRIORI DXE {
+   INF  MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
+   INF  Nt32Pkg/MetronomeDxe/MetronomeDxe.inf
++!ifdef $(ENCOV)
++  !ifdef $(BINARY_ONLY)
++  INF  RuleOverride = BINARY USE = IA32 CodeCoverageBinPkg/CodeCoverageDxe/CodeCoverageDxeBin.inf
++  !else
++  INF CodeCoverageBinPkg/CodeCoverageDxe/CodeCoverageDxe.inf
++  !endif
++!endif
+   }
+ 
+ INF  MdeModulePkg/Core/Pei/PeiMain.inf
+@@ -181,6 +188,13 @@
+ INF  Nt32Pkg/WinNtFlashMapPei/WinNtFlashMapPei.inf
+ INF  Nt32Pkg/WinNtAutoScanPei/WinNtAutoScanPei.inf
+ INF  Nt32Pkg/WinNtFirmwareVolumePei/WinNtFirmwareVolumePei.inf
++!ifdef $(ENCOV)
++  !ifdef $(BINARY_ONLY)
++    INF  RuleOverride = BINARY USE = IA32 CodeCoverageBinPkg/CodeCoveragePei/CodeCoveragePeiBin.inf
++  !else
++    INF CodeCoverageBinPkg/CodeCoveragePei/CodeCoveragePei.inf
++  !endif
++!endif
+ 
+ !if $(SECURE_BOOT_ENABLE) == TRUE
+ INF  SecurityPkg/VariableAuthenticated/Pei/VariablePei.inf
+@@ -195,6 +209,15 @@
+   #  DXE Phase modules
+   ##
+ INF  MdeModulePkg/Core/Dxe/DxeMain.inf
++!ifdef $(ENCOV)
++  !ifdef $(BINARY_ONLY)
++    INF  RuleOverride = BINARY USE = IA32 CodeCoverageBinPkg/CodeCoverageDxe/CodeCoverageDxeBin.inf
++    INF  RuleOverride = BINARY USE = IA32 CodeCoverageBinPkg/CovResetSystem/CovResetSystemBin.inf
++  !else
++    INF  CodeCoverageBinPkg/CodeCoverageDxe/CodeCoverageDxe.inf
++    INF  CodeCoverageBinPkg/CovResetSystem/CovResetSystem.inf
++  !endif
++!endif
+ INF  MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
+ INF  Nt32Pkg/MetronomeDxe/MetronomeDxe.inf
+ INF  Nt32Pkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
+@@ -279,7 +302,12 @@
+     SECTION RAW = MdeModulePkg/Logo/Logo.bmp
+   }
+ 
+-
++!ifdef $(ENCOV)
++#PCD(gCodeCoverageBinPkgTokenSpaceGuid.PcdCovDxeFileName)
++FILE FREEFORM = B352076F-31A4-47ee-8919-A1B1C41B99BD{
++    SECTION RAW = CodeCoverageBinPkg\Config\Edk2Cov.ucda
++  }
++!endif
+ ################################################################################
+ #
+ # Rules are use with the [FV] section's module INF type to define
+@@ -332,6 +360,25 @@
+     }
+   }
+ 
++!ifdef $(ENCOV)
++  !ifdef $(BINARY_ONLY)
++[Rule.Common.PEIM.BINARY]
++  FILE PEIM = $(NAMED_GUID)               {
++     PEI_DEPEX PEI_DEPEX Optional        |.depex
++     PE32      PE32    Align=Auto        |.efi
++     UI        STRING="$(MODULE_NAME)" Optional
++     VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
++  }
++
++[Rule.Common.DXE_RUNTIME_DRIVER.BINARY]
++  FILE DRIVER = $(NAMED_GUID) {
++    DXE_DEPEX DXE_DEPEX Optional       |.depex
++    PE32      PE32                     |.efi
++    UI        STRING="$(MODULE_NAME)" Optional
++    VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
++  }
++  !endif
++!endif
+ [Rule.Common.UEFI_DRIVER]
+   FILE DRIVER = $(NAMED_GUID) {
+     DXE_DEPEX    DXE_DEPEX Optional      $(INF_OUTPUT)/$(MODULE_NAME).depex

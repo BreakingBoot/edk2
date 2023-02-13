@@ -1,0 +1,17 @@
+Index: Makefile
+===================================================================
+--- Makefile	(revision 2085)
++++ Makefile	(working copy)
+@@ -162,3 +162,11 @@
+ 	cc -c $(CCFLAGS) libcov-user.c
+ 	# Put the object produced above into the library
+ 	ar -r $@ libcov-user.obj
++
++#-----------------------------------------------------------------------
++# Build the libcov-edk2.lib for EDK2 code coverage
++#
++libcov-edk2.lib: $(CrossDepend) covrt.c
++	$(CC) -Gd -Gy- -W4 /Od /WX- /Zi -DLibcov_noAutoSave covrt.c
++# Put the object produced above into the library
++	lib -nologo -out:$@ covrt.obj
+\ No newline at end of file

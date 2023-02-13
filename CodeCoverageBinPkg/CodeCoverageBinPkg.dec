@@ -1,0 +1,77 @@
+## @file
+#
+# INTEL CONFIDENTIAL
+#
+# Copyright (c) 2012-2013 Intel Corporation. All rights reserved.
+# The source code contained or described herein and all documents related 
+# to the source code ("Material") are owned by Intel Corporation or its 
+# suppliers or licensors. Title to the Material remains with Intel 
+# Corporation or its suppliers and licensors. 
+# The Material may contain trade secrets and proprietary and confidential 
+# information of Intel Corporation and its suppliers and licensors, and is 
+# protected by worldwide copyright and trade secret laws and treaty 
+# provisions. No part of the Material may be used, copied, reproduced, 
+# modified, published, uploaded, posted, transmitted, distributed, or 
+# disclosed in any way without Intel's prior express written permission. 
+#
+# No license under any patent, copyright, trade secret or other intellectual 
+# property right is granted to or conferred upon you by disclosure or 
+# delivery of the Materials, either expressly, by implication, inducement, 
+# estoppel or otherwise. Any license under such intellectual property rights 
+# must be express and approved by Intel in writing.
+#
+# Include any supplier copyright notices as supplier requires Intel to use.
+#
+# Include supplier trademarks or logos as supplier requires Intel to use, 
+# preceded by an asterisk. An asterisked footnote can be added as follows: 
+# *Third Party trademarks are the property of their respective owners.
+#
+# Unless otherwise agreed by Intel in writing, you may not remove or alter 
+# this notice or any other notice embedded in Materials by Intel or Intel's 
+# suppliers or licensors in any way.
+# 
+##
+
+#
+# This Package provides all definitions(including functions, MACROs, structures and library classes)
+# and libraries instances, which are related to code coverage.
+#
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = CodeCoverageBinPkg
+  PACKAGE_GUID                   = 17E41FEA-246D-436e-8A7C-DE7D7692898E
+  PACKAGE_VERSION                = 0.5
+
+
+[Includes]
+  Include
+
+[LibraryClasses]
+
+[Guids]
+# {B352076F-31A4-47ee-8919-A1B1C41B99BC}
+  gCodeCoverageBinPkgTokenSpaceGuid = { 0xb352076f, 0x31a4, 0x47ee, { 0x89, 0x19, 0xa1, 0xb1, 0xc4, 0x1b, 0x99, 0xbc } }
+
+# {6754352A-8DB1-40a9-B15F-623B11E117A1}
+  gCodeCoverageCovFileDataGuid = { 0x6754352a, 0x8db1, 0x40a9, { 0xb1, 0x5f, 0x62, 0x3b, 0x11, 0xe1, 0x17, 0xa1 } }
+
+# {EB3EBAF6-AA07-4fca-965D-73039C245CA9}
+  gCodeCoverageCovFileFfsGuid= { 0xeb3ebaf6, 0xaa07, 0x4fca, { 0x96, 0x5d, 0x73, 0x3, 0x9c, 0x24, 0x5c, 0xa9 } }
+
+#{6E57309C-2BB8-4af3-B436-80D0293E7EDF}
+  gCodeCoverageCovServicesGuid = { 0x6e57309c, 0x2bb8, 0x4af3, { 0xb4, 0x36, 0x80, 0xd0, 0x29, 0x3e, 0x7e, 0xdf } }
+
+[Ppis]
+# {2A60297A-462A-4285-865A-6CA41521E713}
+  gCodeCoverageCovFilePpiGuid = { 0x2a60297a, 0x462a, 0x4285, { 0x86, 0x5a, 0x6c, 0xa4, 0x15, 0x21, 0xe7, 0x13 } }
+
+[Protocols]
+# {32078268-E800-43c4-A14D-BD23A5332086}
+  gCodeCoverageCovFileProtocolGuid = { 0x32078268, 0xe800, 0x43c4, { 0xa1, 0x4d, 0xbd, 0x23, 0xa5, 0x33, 0x20, 0x86 } }
+
+[PcdsFixedAtBuild]
+# {B352076F-31A4-47ee-8919-A1B1C41B99BD}
+  gCodeCoverageBinPkgTokenSpaceGuid.PcdCovFileName|{ 0x6F, 0x07, 0x52, 0xB3, 0xA4, 0x31, 0xEE, 0x47, 0x89, 0x19, 0xA1, 0xB1, 0xC4, 0x1B, 0x99, 0xBD}|VOID*|0x00000002
+
+

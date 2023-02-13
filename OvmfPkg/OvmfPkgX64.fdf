@@ -187,6 +187,22 @@ INF  OvmfPkg/SmmAccess/SmmAccessPei.inf
 !endif
 INF  UefiCpuPkg/CpuMpPei/CpuMpPei.inf
 INF  FILE_GUID = $(UP_CPU_PEI_GUID) UefiCpuPkg/CpuMpPei/CpuMpPei.inf
+!ifdef $(ENCOV)
+  INF CodeCoverageBinPkg/CodeCoveragePei/CodeCoveragePei.inf
+!endif
+
+FILE FV_IMAGE = A4EF5A93-3F1B-4232-A1C4-F0910E6D1D9C {
+  SECTION COMPRESS PI_NONE {
+    SECTION FV_IMAGE = DXEFV
+  }
+}
+
+!ifdef $(ENCOV)
+#PCD(gCodeCoverageBinPkgTokenSpaceGuid.PcdCovDxeFileName)
+FILE FREEFORM = B352076F-31A4-47ee-8919-A1B1C41B99BD{
+    SECTION RAW = CodeCoverageBinPkg/Config/Edk2Cov.ucda
+  }
+!endif
 
 !include OvmfPkg/OvmfTpmPei.fdf.inc
 
@@ -215,6 +231,9 @@ READ_LOCK_STATUS   = TRUE
 
 APRIORI DXE {
   INF  MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
+  !ifdef $(ENCOV)
+    INF CodeCoverageBinPkg/CodeCoverageDxe/CodeCoverageDxe.inf
+  !endif
   INF  MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
   # AmdSevDxe must be loaded before TdxDxe. Because in SEV guest AmdSevDxe
   # driver performs a MemEncryptSevClearMmioPageEncMask() call against the
@@ -232,6 +251,10 @@ APRIORI DXE {
 # DXE Phase modules
 #
 INF  MdeModulePkg/Core/Dxe/DxeMain.inf
+!ifdef $(ENCOV)
+  INF  CodeCoverageBinPkg/CodeCoverageDxe/CodeCoverageDxe.inf
+  INF  CodeCoverageBinPkg/CovResetSystem/CovResetSystem.inf
+!endif
 
 INF  MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe.inf
 INF  MdeModulePkg/Universal/StatusCodeHandler/RuntimeDxe/StatusCodeHandlerRuntimeDxe.inf

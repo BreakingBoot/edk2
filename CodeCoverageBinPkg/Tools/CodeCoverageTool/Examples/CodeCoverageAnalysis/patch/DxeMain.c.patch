@@ -1,0 +1,41 @@
+Index: MdeModulePkg/Core/Dxe/DxeMain/DxeMain.c
+===================================================================
+--- MdeModulePkg/Core/Dxe/DxeMain/DxeMain.c	(revision 14459)
++++ MdeModulePkg/Core/Dxe/DxeMain/DxeMain.c	(working copy)
+@@ -244,6 +244,17 @@
+   PE_COFF_LOADER_IMAGE_CONTEXT  ImageContext;
+ 
+   //
++  // Allocate the EFI System Table and EFI Runtime Service Table from EfiRuntimeServicesData
++  // Use the templates to initialize the contents of the EFI System Table and EFI Runtime Services Table
++  //
++  gDxeCoreST = AllocateRuntimeCopyPool (sizeof (EFI_SYSTEM_TABLE), &mEfiSystemTableTemplate);
++  ASSERT (gDxeCoreST != NULL);
++
++  gDxeCoreRT = AllocateRuntimeCopyPool (sizeof (EFI_RUNTIME_SERVICES), &mEfiRuntimeServicesTableTemplate);
++  ASSERT (gDxeCoreRT != NULL);
++
++  gDxeCoreST->RuntimeServices = gDxeCoreRT;
++  //
+   // Setup the default exception handlers
+   //
+   SetupCpuExceptionHandlers ();
+@@ -259,18 +270,6 @@
+   CoreInitializeMemoryServices (&HobStart, &MemoryBaseAddress, &MemoryLength);
+ 
+   //
+-  // Allocate the EFI System Table and EFI Runtime Service Table from EfiRuntimeServicesData
+-  // Use the templates to initialize the contents of the EFI System Table and EFI Runtime Services Table
+-  //
+-  gDxeCoreST = AllocateRuntimeCopyPool (sizeof (EFI_SYSTEM_TABLE), &mEfiSystemTableTemplate);
+-  ASSERT (gDxeCoreST != NULL);
+-
+-  gDxeCoreRT = AllocateRuntimeCopyPool (sizeof (EFI_RUNTIME_SERVICES), &mEfiRuntimeServicesTableTemplate);
+-  ASSERT (gDxeCoreRT != NULL);
+-
+-  gDxeCoreST->RuntimeServices = gDxeCoreRT;
+-
+-  //
+   // Start the Image Services.
+   //
+   Status = CoreInitializeImageServices (HobStart);

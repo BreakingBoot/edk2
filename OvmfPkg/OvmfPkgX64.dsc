@@ -779,6 +779,17 @@
       MpInitLib|UefiCpuPkg/Library/MpInitLibUp/MpInitLibUp.inf
       NULL|OvmfPkg/Library/MpInitLibDepLib/PeiMpInitLibUpDepLib.inf
   }
+  #
+  # Code Coverage module
+  #
+  !ifdef $(ENCOV) 
+    CodeCoverageBinPkg/CodeCoveragePei/CodeCoveragePei.inf {
+      <LibraryClasses>
+      !if $(ITSCOV_VS2008_ENABLE) == TRUE
+        CodeCoveragePeimLib|CodeCoverageBinPkg/Library/VS2008/CodeCoveragePeimLib/CodeCoveragePeimLib.inf
+      !endif
+    }
+  !endif
 
 !include OvmfPkg/OvmfTpmComponentsPei.dsc.inc
 
@@ -790,6 +801,23 @@
       NULL|MdeModulePkg/Library/LzmaCustomDecompressLib/LzmaCustomDecompressLib.inf
       DevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf
   }
+  #
+  # Code Coverage module
+  #
+  !ifdef $(ENCOV) 
+    CodeCoverageBinPkg/CodeCoverageDxe/CodeCoverageDxe.inf {
+      <LibraryClasses>
+      !if $(ITSCOV_VS2008_ENABLE) == TRUE
+        CodeCoverageDriverLib|CodeCoverageBinPkg/Library/VS2008/CodeCoverageDriverLib/CodeCoverageDriverLib.inf
+      !endif
+    }
+    CodeCoverageBinPkg/CovResetSystem/CovResetSystem.inf {
+      <LibraryClasses>
+      !if $(ITSCOV_VS2008_ENABLE) == TRUE
+        CovResetSystemLib|CodeCoverageBinPkg/Library/VS2008/CovResetSystemLib/CovResetSystemLib.inf
+      !endif
+    }
+  !endif
 
   MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe.inf
   MdeModulePkg/Universal/StatusCodeHandler/RuntimeDxe/StatusCodeHandlerRuntimeDxe.inf
