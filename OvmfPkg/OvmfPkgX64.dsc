@@ -1057,10 +1057,10 @@
   #
   OvmfPkg/CpuHotplugSmm/CpuHotplugSmm.inf
   UefiCpuPkg/CpuIo2Smm/CpuIo2Smm.inf
-  MdeModulePkg/Universal/LockBox/SmmLockBox/SmmLockBox.inf {
-    <LibraryClasses>
-      LockBoxLib|MdeModulePkg/Library/SmmLockBoxLib/SmmLockBoxSmmLib.inf
-  }
+  # MdeModulePkg/Universal/LockBox/SmmLockBox/SmmLockBox.inf {
+  #  <LibraryClasses>
+  #    LockBoxLib|MdeModulePkg/Library/SmmLockBoxLib/SmmLockBoxSmmLib.inf
+  #}
   UefiCpuPkg/PiSmmCpuDxeSmm/PiSmmCpuDxeSmm.inf {
     <LibraryClasses>
       SmmCpuPlatformHookLib|OvmfPkg/Library/SmmCpuPlatformHookLibQemu/SmmCpuPlatformHookLibQemu.inf

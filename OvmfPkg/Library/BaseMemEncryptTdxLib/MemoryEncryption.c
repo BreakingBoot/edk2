@@ -27,8 +27,6 @@
 #include "VirtualMemory.h"
 #include <IndustryStandard/Tdx.h>
 #include <Library/TdxLib.h>
-#include <Library/UefiBootServicesTableLib.h>
-#include <Protocol/MemoryAccept.h>
 #include <ConfidentialComputingGuestAttr.h>
 
 typedef enum {
@@ -519,9 +517,8 @@ SetOrClearSharedBit (
   IN           UINT64              Length
   )
 {
-  UINT64                        AddressEncMask;
-  UINT64                        Status;
-  EDKII_MEMORY_ACCEPT_PROTOCOL  *MemoryAcceptProtocol;
+  UINT64  AddressEncMask;
+  UINT64  Status;
 
   AddressEncMask = GetMemEncryptionAddressMask ();
 
@@ -542,10 +539,7 @@ SetOrClearSharedBit (
   // If changing shared to private, must accept-page again
   //
   if (Mode == ClearSharedBit) {
-    Status = gBS->LocateProtocol (&gEdkiiMemoryAcceptProtocolGuid, NULL, (VOID **)&MemoryAcceptProtocol);
-    ASSERT (!EFI_ERROR (Status));
-    Status = MemoryAcceptProtocol->AcceptMemory (MemoryAcceptProtocol, PhysicalAddress, Length);
-    ASSERT (!EFI_ERROR (Status));
+    TdAcceptPages (PhysicalAddress, Length / EFI_PAGE_SIZE, EFI_PAGE_SIZE);
   }
 
   DEBUG ((

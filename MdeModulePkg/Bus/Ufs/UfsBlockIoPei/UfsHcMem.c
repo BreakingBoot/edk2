@@ -1,7 +1,6 @@
 /** @file
 
 Copyright (c) 2014 - 2018, Intel Corporation. All rights reserved.<BR>
-Copyright (c) 1985 - 2022, American Megatrends International LLC. <BR>
 
 SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -19,7 +18,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 **/
 UFS_PEIM_MEM_BLOCK *
 UfsPeimAllocMemBlock (
-  IN UINTN  Pages
+  IN  UINTN  Pages
   )
 {
   UFS_PEIM_MEM_BLOCK    *Block;
@@ -108,8 +107,8 @@ UfsPeimFreeMemBlock (
 **/
 VOID *
 UfsPeimAllocMemFromBlock (
-  IN UFS_PEIM_MEM_BLOCK  *Block,
-  IN UINTN               Units
+  IN  UFS_PEIM_MEM_BLOCK  *Block,
+  IN  UINTN               Units
   )
 {
   UINTN  Byte;
@@ -222,7 +221,7 @@ UfsPeimIsMemBlockEmpty (
 **/
 EFI_STATUS
 UfsPeimInitMemPool (
-  IN UFS_PEIM_HC_PRIVATE_DATA  *Private
+  IN  UFS_PEIM_HC_PRIVATE_DATA  *Private
   )
 {
   UFS_PEIM_MEM_POOL  *Pool;
@@ -293,8 +292,8 @@ UfsPeimFreeMemPool (
 **/
 VOID *
 UfsPeimAllocateMem (
-  IN UFS_PEIM_MEM_POOL  *Pool,
-  IN UINTN              Size
+  IN  UFS_PEIM_MEM_POOL  *Pool,
+  IN  UINTN              Size
   )
 {
   UFS_PEIM_MEM_BLOCK  *Head;
@@ -414,10 +413,6 @@ UfsPeimFreeMem (
   // the caller has passed in a wrong memory point
   //
   ASSERT (Block != NULL);
-
-  if (Block == NULL) {
-    return;
-  }
 
   //
   // Release the current memory block if it is empty and not the head

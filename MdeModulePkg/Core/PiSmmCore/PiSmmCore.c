@@ -610,7 +610,6 @@ SmmEndOfS3ResumeHandler (
   @param[in] Size2  Size of Buff2
 
   @retval TRUE      Buffers overlap in memory.
-  @retval TRUE      Math error.     Prevents potential math over and underflows.
   @retval FALSE     Buffer doesn't overlap.
 
 **/
@@ -622,24 +621,11 @@ InternalIsBufferOverlapped (
   IN UINTN  Size2
   )
 {
-  UINTN    End1;
-  UINTN    End2;
-  BOOLEAN  IsOverUnderflow1;
-  BOOLEAN  IsOverUnderflow2;
-
-  // Check for over or underflow
-  IsOverUnderflow1 = EFI_ERROR (SafeUintnAdd ((UINTN)Buff1, Size1, &End1));
-  IsOverUnderflow2 = EFI_ERROR (SafeUintnAdd ((UINTN)Buff2, Size2, &End2));
-
-  if (IsOverUnderflow1 || IsOverUnderflow2) {
-    return TRUE;
-  }
-
   //
   // If buff1's end is less than the start of buff2, then it's ok.
   // Also, if buff1's start is beyond buff2's end, then it's ok.
   //
-  if ((End1 <= (UINTN)Buff2) || ((UINTN)Buff1 >= End2)) {
+  if (((Buff1 + Size1) <= Buff2) || (Buff1 >= (Buff2 + Size2))) {
     return FALSE;
   }
 
@@ -665,7 +651,6 @@ SmmEntryPoint (
   EFI_SMM_COMMUNICATE_HEADER  *CommunicateHeader;
   BOOLEAN                     InLegacyBoot;
   BOOLEAN                     IsOverlapped;
-  BOOLEAN                     IsOverUnderflow;
   VOID                        *CommunicationBuffer;
   UINTN                       BufferSize;
 
@@ -714,31 +699,23 @@ SmmEntryPoint (
                        (UINT8 *)gSmmCorePrivate,
                        sizeof (*gSmmCorePrivate)
                        );
-      //
-      // Check for over or underflows
-      //
-      IsOverUnderflow = EFI_ERROR (SafeUintnSub (BufferSize, OFFSET_OF (EFI_SMM_COMMUNICATE_HEADER, Data), &BufferSize));
-
-      if (!SmmIsBufferOutsideSmmValid ((UINTN)CommunicationBuffer, BufferSize) ||
-          IsOverlapped || IsOverUnderflow)
-      {
+      if (!SmmIsBufferOutsideSmmValid ((UINTN)CommunicationBuffer, BufferSize) || IsOverlapped) {
         //
         // If CommunicationBuffer is not in valid address scope,
         // or there is overlap between gSmmCorePrivate and CommunicationBuffer,
-        // or there is over or underflow,
         // return EFI_INVALID_PARAMETER
         //
         gSmmCorePrivate->CommunicationBuffer = NULL;
         gSmmCorePrivate->ReturnStatus        = EFI_ACCESS_DENIED;
       } else {
         CommunicateHeader = (EFI_SMM_COMMUNICATE_HEADER *)CommunicationBuffer;
-        // BufferSize was updated by the SafeUintnSub() call above.
-        Status = SmiManage (
-                   &CommunicateHeader->HeaderGuid,
-                   NULL,
-                   CommunicateHeader->Data,
-                   &BufferSize
-                   );
+        BufferSize       -= OFFSET_OF (EFI_SMM_COMMUNICATE_HEADER, Data);
+        Status            = SmiManage (
+                              &CommunicateHeader->HeaderGuid,
+                              NULL,
+                              CommunicateHeader->Data,
+                              &BufferSize
+                              );
         //
         // Update CommunicationBuffer, BufferSize and ReturnStatus
         // Communicate service finished, reset the pointer to CommBuffer to NULL

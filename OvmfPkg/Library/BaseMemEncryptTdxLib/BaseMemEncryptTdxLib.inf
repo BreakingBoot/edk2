@@ -42,6 +42,3 @@
 
 [Pcd]
   gEfiMdePkgTokenSpaceGuid.PcdConfidentialComputingGuestAttr
-
-[Protocols]
-  gEdkiiMemoryAcceptProtocolGuid

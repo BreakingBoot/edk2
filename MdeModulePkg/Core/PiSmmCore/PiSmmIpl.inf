@@ -46,7 +46,6 @@
   DxeServicesLib
   PcdLib
   ReportStatusCodeLib
-  SafeIntLib
 
 [Protocols]
   gEfiSmmBase2ProtocolGuid                      ## PRODUCES

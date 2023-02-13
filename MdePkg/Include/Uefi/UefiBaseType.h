@@ -4,7 +4,6 @@
 Copyright (c) 2006 - 2021, Intel Corporation. All rights reserved.<BR>
 Portions copyright (c) 2011 - 2016, ARM Ltd. All rights reserved.<BR>
 Copyright (c) 2020, Hewlett Packard Enterprise Development LP. All rights reserved.<BR>
-Copyright (c) 2022, Loongson Technology Corporation Limited. All rights reserved.<BR>
 
 SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -247,12 +246,6 @@ typedef union {
 #define EFI_IMAGE_MACHINE_RISCV64   0x5064
 #define EFI_IMAGE_MACHINE_RISCV128  0x5128
 
-///
-/// PE32+ Machine type for LoongArch 32/64 images.
-///
-#define EFI_IMAGE_MACHINE_LOONGARCH32  0x6232
-#define EFI_IMAGE_MACHINE_LOONGARCH64  0x6264
-
 #if !defined (EFI_IMAGE_MACHINE_TYPE_VALUE) && !defined (EFI_IMAGE_MACHINE_CROSS_TYPE_VALUE)
   #if   defined (MDE_CPU_IA32)
 
@@ -284,13 +277,6 @@ typedef union {
   #elif defined (MDE_CPU_RISCV64)
 #define EFI_IMAGE_MACHINE_TYPE_SUPPORTED(Machine) \
   ((Machine) == EFI_IMAGE_MACHINE_RISCV64)
-
-#define EFI_IMAGE_MACHINE_CROSS_TYPE_SUPPORTED(Machine)  (FALSE)
-
-  #elif defined (MDE_CPU_LOONGARCH64)
-
-#define EFI_IMAGE_MACHINE_TYPE_SUPPORTED(Machine) \
-    ((Machine) == EFI_IMAGE_MACHINE_LOONGARCH64)
 
 #define EFI_IMAGE_MACHINE_CROSS_TYPE_SUPPORTED(Machine)  (FALSE)
 

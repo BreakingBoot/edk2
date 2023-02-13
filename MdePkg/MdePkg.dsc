@@ -4,7 +4,6 @@
 # Copyright (c) 2007 - 2022, Intel Corporation. All rights reserved.<BR>
 # Portions copyright (c) 2008 - 2009, Apple Inc. All rights reserved.<BR>
 # (C) Copyright 2020 Hewlett Packard Enterprise Development LP<BR>
-# Copyright (c) 2022, Loongson Technology Corporation Limited. All rights reserved.<BR>
 #
 #    SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -16,7 +15,7 @@
   PLATFORM_VERSION               = 1.08
   DSC_SPECIFICATION              = 0x00010005
   OUTPUT_DIRECTORY               = Build/Mde
-  SUPPORTED_ARCHITECTURES        = IA32|X64|EBC|ARM|AARCH64|RISCV64|LOONGARCH64
+  SUPPORTED_ARCHITECTURES        = IA32|X64|EBC|ARM|AARCH64|RISCV64
   BUILD_TARGETS                  = DEBUG|RELEASE|NOOPT
   SKUID_IDENTIFIER               = DEFAULT
 
@@ -57,7 +56,6 @@
   MdePkg/Library/PciSegmentLibSegmentInfo/BasePciSegmentLibSegmentInfo.inf
   MdePkg/Library/PciSegmentLibSegmentInfo/DxeRuntimePciSegmentLibSegmentInfo.inf
   MdePkg/Library/BaseS3PciSegmentLib/BaseS3PciSegmentLib.inf
-  MdePkg/Library/BaseArmTrngLibNull/BaseArmTrngLibNull.inf
   MdePkg/Library/BasePeCoffGetEntryPointLib/BasePeCoffGetEntryPointLib.inf
   MdePkg/Library/BasePeCoffLib/BasePeCoffLib.inf
   MdePkg/Library/BasePeCoffExtraActionLibNull/BasePeCoffExtraActionLibNull.inf

@@ -2286,7 +2286,6 @@ CreatePciIoDevice (
                          &Data32
                          );
       if ((Data32 & EFI_PCIE_CAPABILITY_DEVICE_CAPABILITIES_2_ARI_FORWARDING) != 0) {
-        PciIoDevice->IsAriEnabled = TRUE;
         //
         // ARI forward support in bridge, so enable it.
         //
@@ -2417,17 +2416,13 @@ CreatePciIoDevice (
       //
       // Calculate LastVF
       //
-      if (PciIoDevice->InitialVFs == 0) {
-        PciIoDevice->ReservedBusNum = 0;
-      } else {
-        PFRid  = EFI_PCI_RID (Bus, Device, Func);
-        LastVF = PFRid + FirstVFOffset + (PciIoDevice->InitialVFs - 1) * VFStride;
+      PFRid  = EFI_PCI_RID (Bus, Device, Func);
+      LastVF = PFRid + FirstVFOffset + (PciIoDevice->InitialVFs - 1) * VFStride;
 
-        //
-        // Calculate ReservedBusNum for this PF
-        //
-        PciIoDevice->ReservedBusNum = (UINT16)(EFI_PCI_BUS_OF_RID (LastVF) - Bus);
-      }
+      //
+      // Calculate ReservedBusNum for this PF
+      //
+      PciIoDevice->ReservedBusNum = (UINT16)(EFI_PCI_BUS_OF_RID (LastVF) - Bus + 1);
 
       DEBUG ((
         DEBUG_INFO,

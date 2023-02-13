@@ -506,7 +506,7 @@ XhcInitSched (
   // Software shall set Device Context Base Address Array entries for unallocated Device Slots to '0'.
   //
   Entries = (Xhc->MaxSlotsEn + 1) * sizeof (UINT64);
-  Dcbaa   = UsbHcAllocateMem (Xhc->MemPool, Entries, FALSE);
+  Dcbaa   = UsbHcAllocateMem (Xhc->MemPool, Entries);
   ASSERT (Dcbaa != NULL);
   ZeroMem (Dcbaa, Entries);
 
@@ -795,7 +795,7 @@ CreateEventRing (
   ASSERT (EventRing != NULL);
 
   Size = sizeof (TRB_TEMPLATE) * EVENT_RING_TRB_NUMBER;
-  Buf  = UsbHcAllocateMem (Xhc->MemPool, Size, TRUE);
+  Buf  = UsbHcAllocateMem (Xhc->MemPool, Size);
   ASSERT (Buf != NULL);
   ASSERT (((UINTN)Buf & 0x3F) == 0);
   ZeroMem (Buf, Size);
@@ -814,7 +814,7 @@ CreateEventRing (
   EventRing->EventRingCCS = 1;
 
   Size = sizeof (EVENT_RING_SEG_TABLE_ENTRY) * ERST_NUMBER;
-  Buf  = UsbHcAllocateMem (Xhc->MemPool, Size, FALSE);
+  Buf  = UsbHcAllocateMem (Xhc->MemPool, Size);
   ASSERT (Buf != NULL);
   ASSERT (((UINTN)Buf & 0x3F) == 0);
   ZeroMem (Buf, Size);
@@ -892,7 +892,7 @@ CreateTransferRing (
   LINK_TRB              *EndTrb;
   EFI_PHYSICAL_ADDRESS  PhyAddr;
 
-  Buf = UsbHcAllocateMem (Xhc->MemPool, sizeof (TRB_TEMPLATE) * TrbNum, TRUE);
+  Buf = UsbHcAllocateMem (Xhc->MemPool, sizeof (TRB_TEMPLATE) * TrbNum);
   ASSERT (Buf != NULL);
   ASSERT (((UINTN)Buf & 0x3F) == 0);
   ZeroMem (Buf, sizeof (TRB_TEMPLATE) * TrbNum);
@@ -2182,7 +2182,7 @@ XhcInitializeDeviceSlot (
   // 4.3.3 Device Slot Initialization
   // 1) Allocate an Input Context data structure (6.2.5) and initialize all fields to '0'.
   //
-  InputContext = UsbHcAllocateMem (Xhc->MemPool, sizeof (INPUT_CONTEXT), FALSE);
+  InputContext = UsbHcAllocateMem (Xhc->MemPool, sizeof (INPUT_CONTEXT));
   ASSERT (InputContext != NULL);
   ASSERT (((UINTN)InputContext & 0x3F) == 0);
   ZeroMem (InputContext, sizeof (INPUT_CONTEXT));
@@ -2284,7 +2284,7 @@ XhcInitializeDeviceSlot (
   //
   // 6) Allocate the Output Device Context data structure (6.2.1) and initialize it to '0'.
   //
-  OutputContext = UsbHcAllocateMem (Xhc->MemPool, sizeof (DEVICE_CONTEXT), FALSE);
+  OutputContext = UsbHcAllocateMem (Xhc->MemPool, sizeof (DEVICE_CONTEXT));
   ASSERT (OutputContext != NULL);
   ASSERT (((UINTN)OutputContext & 0x3F) == 0);
   ZeroMem (OutputContext, sizeof (DEVICE_CONTEXT));
@@ -2398,7 +2398,7 @@ XhcInitializeDeviceSlot64 (
   // 4.3.3 Device Slot Initialization
   // 1) Allocate an Input Context data structure (6.2.5) and initialize all fields to '0'.
   //
-  InputContext = UsbHcAllocateMem (Xhc->MemPool, sizeof (INPUT_CONTEXT_64), FALSE);
+  InputContext = UsbHcAllocateMem (Xhc->MemPool, sizeof (INPUT_CONTEXT_64));
   ASSERT (InputContext != NULL);
   ASSERT (((UINTN)InputContext & 0x3F) == 0);
   ZeroMem (InputContext, sizeof (INPUT_CONTEXT_64));
@@ -2500,7 +2500,7 @@ XhcInitializeDeviceSlot64 (
   //
   // 6) Allocate the Output Device Context data structure (6.2.1) and initialize it to '0'.
   //
-  OutputContext = UsbHcAllocateMem (Xhc->MemPool, sizeof (DEVICE_CONTEXT_64), FALSE);
+  OutputContext = UsbHcAllocateMem (Xhc->MemPool, sizeof (DEVICE_CONTEXT_64));
   ASSERT (OutputContext != NULL);
   ASSERT (((UINTN)OutputContext & 0x3F) == 0);
   ZeroMem (OutputContext, sizeof (DEVICE_CONTEXT_64));

@@ -15,7 +15,7 @@
   PLATFORM_VERSION               = 0.98
   DSC_SPECIFICATION              = 0x00010005
   OUTPUT_DIRECTORY               = Build/MdeModule
-  SUPPORTED_ARCHITECTURES        = IA32|X64|EBC|ARM|AARCH64|RISCV64|LOONGARCH64
+  SUPPORTED_ARCHITECTURES        = IA32|X64|EBC|ARM|AARCH64|RISCV64
   BUILD_TARGETS                  = DEBUG|RELEASE|NOOPT
   SKUID_IDENTIFIER               = DEFAULT
 
@@ -193,7 +193,7 @@
   #
   NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf
 
-[LibraryClasses.EBC, LibraryClasses.RISCV64, LibraryClasses.LOONGARCH64]
+[LibraryClasses.EBC, LibraryClasses.RISCV64]
   LockBoxLib|MdeModulePkg/Library/LockBoxNullLib/LockBoxNullLib.inf
 
 [PcdsFeatureFlag]
@@ -215,8 +215,6 @@
 
 [Components]
   MdeModulePkg/Application/HelloWorld/HelloWorld.inf
-  MdeModulePkg/Application/BreakingBoot/BreakingBoot.inf
-  MdeModulePkg/Application/DummyDriver/DummyDriver.inf
   MdeModulePkg/Application/DumpDynPcd/DumpDynPcd.inf
   MdeModulePkg/Application/MemoryProfileInfo/MemoryProfileInfo.inf
 
@@ -445,7 +443,7 @@
   MdeModulePkg/Library/DxeCapsuleLibFmp/DxeCapsuleLib.inf
   MdeModulePkg/Library/DxeCapsuleLibFmp/DxeRuntimeCapsuleLib.inf
   MdeModulePkg/Library/BaseVariableFlashInfoLib/BaseVariableFlashInfoLib.inf
-
+  ShellPkg/Application/BBClient/BBClient.inf
 [Components.IA32, Components.X64, Components.AARCH64]
   MdeModulePkg/Universal/EbcDxe/EbcDxe.inf
   MdeModulePkg/Universal/EbcDxe/EbcDebugger.inf
@@ -490,7 +488,7 @@
   MdeModulePkg/Universal/StatusCodeHandler/Smm/StatusCodeHandlerStandaloneMm.inf
   MdeModulePkg/Universal/ReportStatusCodeRouter/Smm/ReportStatusCodeRouterSmm.inf
   MdeModulePkg/Universal/ReportStatusCodeRouter/Smm/ReportStatusCodeRouterStandaloneMm.inf
-  MdeModulePkg/Universal/LockBox/SmmLockBox/SmmLockBox.inf
+  # MdeModulePkg/Universal/LockBox/SmmLockBox/SmmLockBox.inf
   MdeModulePkg/Library/SmmMemoryAllocationProfileLib/SmmMemoryAllocationProfileLib.inf
   MdeModulePkg/Library/PiSmmCoreMemoryAllocationLib/PiSmmCoreMemoryAllocationProfileLib.inf
   MdeModulePkg/Library/PiSmmCoreMemoryAllocationLib/PiSmmCoreMemoryAllocationLib.inf

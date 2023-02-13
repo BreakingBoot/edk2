@@ -9,7 +9,6 @@
 #
 # Copyright (c) 2019 - 2020, Intel Corporation. All rights reserved.<BR>
 # Copyright (c) 2020, Hewlett Packard Enterprise Development LP. All rights reserved.<BR>
-# Copyright (c) 2022, Loongson Technology Corporation Limited. All rights reserved.<BR>
 #
 #    SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -39,7 +38,7 @@
 !include NetworkPkg/NetworkComponents.dsc.inc
 
 !else
-[Components.IA32, Components.X64, Components.ARM, Components.AARCH64, Components.RISCV64, Components.LOONGARCH64]
+[Components.IA32, Components.X64, Components.ARM, Components.AARCH64, Components.RISCV64]
 !include NetworkPkg/NetworkComponents.dsc.inc
 
 !endif

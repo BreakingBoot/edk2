@@ -504,34 +504,13 @@ ProduceFVBProtocolOnBuffer (
   // Init the block caching fields of the device
   // First, count the number of blocks
   //
-  
   FvbDev->NumBlocks = 0;
   for (PtrBlockMapEntry = FwVolHeader->BlockMap;
        PtrBlockMapEntry->NumBlocks != 0;
        PtrBlockMapEntry++)
   {
-    DEBUG((DEBUG_INFO, "PtrBlockMapEntry - %ld\n", PtrBlockMapEntry->NumBlocks));
     FvbDev->NumBlocks += PtrBlockMapEntry->NumBlocks;
-    DEBUG((DEBUG_INFO, "FvbDev->NumBlocks - %ld\n", FvbDev->NumBlocks));
   }
-  /////////////////////////////////////////////////////////////////////////
-  //        MODIFIED
-  /////////////////////////////////////////////////////////////////////////
-  UINTN test = MAX_UINT32;
-  DEBUG((DEBUG_INFO, "After: Test - %ld\n", test));
-  test += MAX_UINT32;
-
-  DEBUG((DEBUG_INFO, "After: Test - %ld\n", test));
-  test += MAX_UINT32;
-  DEBUG((DEBUG_INFO, "After: Test - %ld\n", test));
-  test += MAX_UINT32;
-  DEBUG((DEBUG_INFO, "After: Test - %ld\n", test));
-  DEBUG((DEBUG_INFO, "After: FvbDev->NumBlocks - %ld\n", FwVolHeader->BlockMap[0].NumBlocks));
-  DEBUG((DEBUG_INFO, "After: FvbDev->NumBlocks - %ld\n", FwVolHeader->BlockMap[1].NumBlocks));
-  DEBUG((DEBUG_INFO, "After: FvbDev->NumBlocks - %ld\n", FvbDev->NumBlocks + MAX_UINT32));
-  DEBUG((DEBUG_INFO, "After: MAX_UINTN - %lld\n", MAX_UINTN));
-  DEBUG((DEBUG_INFO, "After: MAX_UINT64 - %ld\n", MAX_UINT64 + 5));
-  DEBUG((DEBUG_INFO, "After: MAX_UINT32 - %ld\n", MAX_UINT32+5));
 
   //
   // Second, allocate the cache

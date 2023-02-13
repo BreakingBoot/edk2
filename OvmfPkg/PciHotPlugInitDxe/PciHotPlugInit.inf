@@ -40,7 +40,6 @@
 
 [Pcd]
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfHostBridgePciDevId ## CONSUMES
-  gUefiOvmfPkgTokenSpaceGuid.PcdPciMmio64Size          ## CONSUMES
 
 [Depex]
   TRUE

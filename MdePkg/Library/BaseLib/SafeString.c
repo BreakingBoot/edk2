@@ -863,9 +863,6 @@ StrHexToUintnS (
   OUT       UINTN   *Data
   )
 {
-  BOOLEAN  FoundLeadingZero;
-
-  FoundLeadingZero = FALSE;
   ASSERT (((UINTN)String & BIT0) == 0);
 
   //
@@ -895,14 +892,12 @@ StrHexToUintnS (
   //
   // Ignore leading Zeros after the spaces
   //
-
-  FoundLeadingZero = *String == L'0';
   while (*String == L'0') {
     String++;
   }
 
   if (CharToUpper (*String) == L'X') {
-    if (!FoundLeadingZero) {
+    if (*(String - 1) != L'0') {
       *Data = 0;
       return RETURN_SUCCESS;
     }
@@ -997,9 +992,6 @@ StrHexToUint64S (
   OUT       UINT64  *Data
   )
 {
-  BOOLEAN  FoundLeadingZero;
-
-  FoundLeadingZero = FALSE;
   ASSERT (((UINTN)String & BIT0) == 0);
 
   //
@@ -1029,13 +1021,12 @@ StrHexToUint64S (
   //
   // Ignore leading Zeros after the spaces
   //
-  FoundLeadingZero = *String == L'0';
   while (*String == L'0') {
     String++;
   }
 
   if (CharToUpper (*String) == L'X') {
-    if (!FoundLeadingZero) {
+    if (*(String - 1) != L'0') {
       *Data = 0;
       return RETURN_SUCCESS;
     }
@@ -2402,9 +2393,6 @@ AsciiStrHexToUintnS (
   OUT       UINTN  *Data
   )
 {
-  BOOLEAN  FoundLeadingZero;
-
-  FoundLeadingZero = FALSE;
   //
   // 1. Neither String nor Data shall be a null pointer.
   //
@@ -2432,13 +2420,12 @@ AsciiStrHexToUintnS (
   //
   // Ignore leading Zeros after the spaces
   //
-  FoundLeadingZero = *String == '0';
   while (*String == '0') {
     String++;
   }
 
   if (AsciiCharToUpper (*String) == 'X') {
-    if (!FoundLeadingZero) {
+    if (*(String - 1) != '0') {
       *Data = 0;
       return RETURN_SUCCESS;
     }
@@ -2530,9 +2517,6 @@ AsciiStrHexToUint64S (
   OUT       UINT64  *Data
   )
 {
-  BOOLEAN  FoundLeadingZero;
-
-  FoundLeadingZero = FALSE;
   //
   // 1. Neither String nor Data shall be a null pointer.
   //
@@ -2560,13 +2544,12 @@ AsciiStrHexToUint64S (
   //
   // Ignore leading Zeros after the spaces
   //
-  FoundLeadingZero = *String == '0';
   while (*String == '0') {
     String++;
   }
 
   if (AsciiCharToUpper (*String) == 'X') {
-    if (!FoundLeadingZero) {
+    if (*(String - 1) != '0') {
       *Data = 0;
       return RETURN_SUCCESS;
     }
