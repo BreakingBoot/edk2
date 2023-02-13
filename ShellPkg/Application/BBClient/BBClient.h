@@ -50,5 +50,6 @@
 #define PROCESS_FIRMWARE_VOLUME 0
 #define CLOSE_EVENT 1
 #define LOAD_IMAGE 2
+#define EXAMPLE 4
 
 #endif

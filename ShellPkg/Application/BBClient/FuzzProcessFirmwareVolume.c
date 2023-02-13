@@ -21,9 +21,9 @@ FuzzProcessFirmwareVolume(
           }
       */
     CHAR16 temp = 0;
-    UINT64 InputLength;
+    UINTN InputLength;
     ReadInput(Input, 8, &temp);
-    InputLength = StrDecimalToUint64(&temp);
+    InputLength = StrDecimalToUintn(&temp);
     EFI_FVB_ATTRIBUTES_2 InputAttributes;
     ReadInput(Input, 8, &temp);
     InputAttributes = (EFI_FVB_ATTRIBUTES_2)StrDecimalToUintn(&temp);

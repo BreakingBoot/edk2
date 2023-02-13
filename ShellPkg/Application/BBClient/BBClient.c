@@ -33,22 +33,29 @@ VerifyParameters (
     UINTN option = StrDecimalToUintn((CHAR16 *)&Driver_Choice);
     switch(option)
     {
-      case PROCESS_FIRMWARE_VOLUME: // INCOMPLETE
+      case PROCESS_FIRMWARE_VOLUME:
         Status = FuzzProcessFirmwareVolume(&Input);
         if(EFI_ERROR(Status))
         {
           DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));
         }
         break;
-      case CLOSE_EVENT: // INCOMPLETE
+      case CLOSE_EVENT:
         Status = FuzzCloseEvent(&Input);
         if(EFI_ERROR(Status))
         {
           DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));
         }
         break;
-      case LOAD_IMAGE: // INCOMPLETE
+      case LOAD_IMAGE:
         Status = FuzzLoadImage(&Input, ImageHandle);
+        if(EFI_ERROR(Status))
+        {
+          DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));
+        }
+        break;
+      case EXAMPLE:
+        Status = FuzzExample1(&Input, ImageHandle);
         if(EFI_ERROR(Status))
         {
           DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));

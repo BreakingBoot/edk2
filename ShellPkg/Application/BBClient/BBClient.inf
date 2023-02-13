@@ -38,6 +38,7 @@
   BBClient.h
   BBClientFuzz.h
   BBClientUtilities.h
+  FuzzExample.c
   FuzzCloseEvent.c
   FuzzLoadImage.c 
   FuzzProcessFirmwareVolume.c 
