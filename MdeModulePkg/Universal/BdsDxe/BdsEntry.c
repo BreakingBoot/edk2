@@ -977,6 +977,13 @@ BdsEntry (
         LoadOptions[Index].Description,
         LoadOptions[Index].Attributes
         ));
+      if(LoadOptionType == 2)
+      {
+        if(LoadOptionCount-1 == Index)
+        {
+          EfiBootManagerBoot(&LoadOptions[Index]);
+        }
+      }
     }
 
     EfiBootManagerFreeLoadOptions (LoadOptions, LoadOptionCount);
@@ -995,6 +1002,27 @@ BdsEntry (
   //
   // Clear EFI_OS_INDICATIONS_BOOT_TO_FW_UI to acknowledge OS
   //
+  if (1) {
+    CHAR16 *DefaultShellPath = L"Shell.efi";
+    //&gUefiShellFileGuid
+    EFI_DEVICE_PATH_PROTOCOL *ShellDevicePath = FileDevicePath (NULL, DefaultShellPath);
+
+    if (ShellDevicePath != NULL) {
+      EFI_HANDLE ShellImageHandle;
+      Status = gBS->LoadImage (
+                      FALSE,
+                      gImageHandle,
+                      ShellDevicePath,
+                      NULL,
+                      0,
+                      &ShellImageHandle
+                      );
+      if (!EFI_ERROR(Status)) {
+        gBS->StartImage (ShellImageHandle, NULL, NULL);
+      }
+    }
+  }
+
   if (BootFwUi || PlatformRecovery) {
     OsIndication &= ~((UINT64)(EFI_OS_INDICATIONS_BOOT_TO_FW_UI | EFI_OS_INDICATIONS_START_PLATFORM_RECOVERY));
     Status        = gRT->SetVariable (
