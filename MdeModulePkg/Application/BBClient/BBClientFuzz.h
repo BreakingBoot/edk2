@@ -4,6 +4,7 @@
 #include "FuzzLoadImage.h"
 #include "FuzzCloseEvent.h"
 #include "FuzzProcessFirmwareVolume.h"
+#include "FuzzSmmHarden.h"
 #include "FuzzExample.h"
 #include "BBClientUtilities.h"
 

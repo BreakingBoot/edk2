@@ -30,7 +30,7 @@ VOID
 {
     if (InputBuffer->Length < NumBytes)
     {
-        DEBUG((DEBUG_ERROR, "ERROR: Invalid Input Length"));
+        DEBUG((DEBUG_ERROR, "ERROR: Invalid Input Length BufferLength = %d, RequestedLength = %d\n", InputBuffer->Length, NumBytes));
         ASSERT(InputBuffer->Length < NumBytes);
     }
     ZeroMem(Buffer, NumBytes);

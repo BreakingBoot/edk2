@@ -71,6 +71,6 @@ FuzzCloseEvent(
         DEBUG((DEBUG_ERROR, "FAILED Creating DummyEvent of Type: %x with a Status: %r\n", Type, Status));
     }
     Status = gBS->CloseEvent(DummyEvent);
-
+    
     return Status;
 }

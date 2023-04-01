@@ -41,6 +41,7 @@
   FuzzExample.c
   FuzzCloseEvent.c
   FuzzLoadImage.c 
+  FuzzSmmHarden.c
   FuzzProcessFirmwareVolume.c 
 
 [Packages]
@@ -60,11 +61,19 @@
   DebugLib
   BaseLib
 
+[Guids]
+  gEfiSmmHardenBootServiceGuid  ## SOMETIMES_CONSUMES ## GUID
+  gEdkiiPiSmmCommunicationRegionTableGuid  ## SOMETIMES_CONSUMES ## SystemTable
+  gEfiSmmHardenExampleVariableGuid ## SOMETIMES_CONSUMES ## GUID
+  gEfiSmmHardenVariableManagerGuid
+
 [Protocols]
   gEfiShellParametersProtocolGuid
   gEfiFirmwareVolume2ProtocolGuid
   gEfiShellInterfaceGuid
   gEfiDevicePathProtocolGuid
+  gExample1_Driver_LockboxProtocolGuid
+  gEfiSmmCommunicationProtocolGuid  ## SOMETIMES_CONSUMES
 
 
 

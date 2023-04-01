@@ -54,6 +54,13 @@ VerifyParameters (
           DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));
         }
         break;
+      case SMM_HARDEN:
+        Status = FuzzSmmHarden(&Input);
+        if(EFI_ERROR(Status))
+        {
+          DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));
+        }
+        break;
       case EXAMPLE:
         Status = FuzzExample1(&Input, ImageHandle);
         if(EFI_ERROR(Status))
@@ -69,6 +76,11 @@ VerifyParameters (
   else
   {
     HelpMenu();
+  }
+
+  if(EFI_ERROR(Status))
+  {
+    CpuDeadLoop();
   }
 
   return EFI_SUCCESS;

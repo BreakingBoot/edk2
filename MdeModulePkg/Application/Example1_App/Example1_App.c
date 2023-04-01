@@ -52,10 +52,10 @@ ScanMemViaCRC(
     {
 	retCRCValue = 0;
         gBS->CalculateCrc32 ((void *) i, Increment, &retCRCValue);
-        // Print(L"Found (0x%04x) @ (0x%04x)\r\n", retCRCValue, i);
+        Print(L"Found (0x%04x) @ (0x%04x)\r\n", retCRCValue, i);
         if (retCRCValue == LOCKPIN_CRC32) // expectedCRCValue)
         {
-            // Print(L"Found it(0x%04x) vs (0x%04x) @ (0x%04x)\r\n", expectedCRCValue, retCRCValue, i);
+            Print(L"Found it(0x%04x) vs (0x%04x) @ (0x%04x)\r\n", expectedCRCValue, retCRCValue, i);
             (*location) = i;
             return EFI_SUCCESS;
         }
@@ -129,8 +129,8 @@ Example1_App_Entry (
     UINTN lockpinAddr = 0;
     
     UINTN startLoc=SEARCH_START;
-    //UINTN count=0;
-    //TRYAGAIN: // come back here if we got a bad address
+    UINTN count=0;
+    TRYAGAIN: // come back here if we got a bad address
     Print(L"Searching memory for lockpin address via crc32, staring @(0x%p)\r\n", startLoc);
     if (ScanMemViaCRC(startLoc, SEARCH_END, SEARCH_SIZE, &lockpinAddr) != EFI_SUCCESS)
     {
@@ -143,7 +143,6 @@ Example1_App_Entry (
     if (lockpinAddr != 0)
     {  /* WITH LOCKPIN ADDRESS KNOWN, SET LOCKPIN VALUE TO 0 (ALLOWING WRITING IN LOCKBOX) VIA WRITEDATA FUNCTION */
         /* 6. ATTEMPT TO SET DRIVER LOCKPIN TO 0 - EXPECTED TO SUCCEED */
-        /*
         Print(L"Call Driver WriteData function to try to set lockpin to 0 (expected to succeed)\r\n");
         lockpinValue = 0;
         retval = ProtocolInterface->Example1_Driver_Lockbox_WriteData(ProtocolInterface, NULL, (void *)lockpinAddr, &lockpinValue, sizeof(UINTN));
@@ -154,9 +153,8 @@ Example1_App_Entry (
             return EFI_ABORTED;
         }
         Print(L"  Succeeded in setting lockpin to 0\r\n");
-        */
         /* 7. ATTEMPT TO WRITE TO LOCKBOX AREA - EXPECTED TO SUCCEED */
-        /*
+        
         Print(L"Call Driver WriteData function to write data to lockbox (expected to succeed)\r\n");
         retval = ProtocolInterface->Example1_Driver_Lockbox_WriteData_Wrapper(ProtocolInterface, NULL, LOCKBOX_OFFSET, WRITE_MESSAGE, WRITE_SIZE);
         if (retval != 0)
@@ -170,9 +168,9 @@ Example1_App_Entry (
             goto TRYAGAIN;
         }
         Print(L"  Succeeded in writing data to lockbox\r\n\r\n");
-        */
+        
         /* 8. READ MEMORY AT OFFSET TO VERIFY IT HAS WRITTEN VALUE */
-        /*
+        
         CHAR8 *storage=AllocatePool(WRITE_SIZE);
         VOID **storagePtr = (void**)&storage;
         SetMemN(storage, WRITE_SIZE-1, '\0');
@@ -190,8 +188,7 @@ Example1_App_Entry (
         AsciiStrnToUnicodeStrS(storage, WRITE_SIZE, storage16, WRITE_SIZE*2,&destLen);
         Print(L"  Succeeded in reading data from lockbox (%s)\r\n", storage16);
         FreePool(storage);
-        FreePool(storage16); 
-        */   
+        FreePool(storage16);   
     }
     else{
         Print(L"Invalid lockpin address\r\n");
