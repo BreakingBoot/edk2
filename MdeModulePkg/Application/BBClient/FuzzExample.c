@@ -25,7 +25,7 @@ FuzzExample1(
         case SETLOCKPIN:
             UINTN Value;
             ReadInput(Input, 8, &Value);
-            return Fuzz_Lockbox_SetLockPin(NULL, Value);
+            Status = Fuzz_Lockbox_SetLockPin(NULL, Value);
             break;
         case WRITEDATA_WRAPPER:
             UINTN length;
@@ -34,7 +34,7 @@ FuzzExample1(
             ReadInput(Input, length, &src);
             UINTN offset;
             ReadInput(Input, 8, &offset);
-            return Fuzz_Lockbox_WriteData_Wrapper(NULL, offset, (VOID *)&src, length);
+            Status = Fuzz_Lockbox_WriteData_Wrapper(NULL, offset, (VOID *)&src, length);
             break;
         case WRITEDATA: 
             UINTN size;
@@ -43,7 +43,7 @@ FuzzExample1(
             ReadInput(Input, size, &src_write);
             UINTN dest_write;
             ReadInput(Input, 8, &dest_write);
-            return Fuzz_Lockbox_WriteData(NULL, (VOID *)dest_write, &src_write, size);
+            Status = Fuzz_Lockbox_WriteData(NULL, (VOID *)dest_write, &src_write, size);
             break;
         case READDATA:
             UINTN read_value;
@@ -55,7 +55,6 @@ FuzzExample1(
             SetMemN(storage, read_value-1, '\0');
             Status = Fuzz_Lockbox_ReadData(NULL, buffer, Offset, read_value);
             FreePool(storage);
-            return Status;
             break;
         case WRITE_LOCK:
             UINTN write_value;
@@ -67,7 +66,7 @@ FuzzExample1(
             ReadInput(Input, size_r, &src_w);
             UINTN dest_w;
             ReadInput(Input, 8, &dest_w);
-            return Fuzz_Lockbox_WriteData(NULL, (VOID *)dest_w, &src_w, size_r);
+            Status = Fuzz_Lockbox_WriteData(NULL, (VOID *)dest_w, &src_w, size_r);
             break;
         case READ_LOCK:
             UINTN read_val;
@@ -84,7 +83,7 @@ FuzzExample1(
             FreePool(stor);
             break;
     }
-    return EFI_SUCCESS;
+    return Status;
 }
 
 EFI_STATUS
@@ -97,7 +96,8 @@ Fuzz_Lockbox_SetLockPin(
     EFI_STATUS retval = ProtocolInterface->Example1_Driver_Lockbox_SetLockPin(ProtocolInterface, Controller, Value);
     if (retval != EFI_SUCCESS)
     {
-        CpuDeadLoop();
+        //CpuDeadLoop();
+        return EFI_ABORTED;
     }
     return EFI_SUCCESS;
 }
@@ -114,7 +114,8 @@ Fuzz_Lockbox_WriteData_Wrapper(
     EFI_STATUS retval = ProtocolInterface->Example1_Driver_Lockbox_WriteData_Wrapper(ProtocolInterface, Controller, offset, src, length);
     if (retval != EFI_SUCCESS)
     {
-        CpuDeadLoop();
+        //CpuDeadLoop();
+        return EFI_ABORTED;
     }
     return EFI_SUCCESS;
 
@@ -132,7 +133,8 @@ Fuzz_Lockbox_ReadData(
     EFI_STATUS retval = ProtocolInterface->Example1_Driver_Lockbox_ReadData(ProtocolInterface, Controller, dest, offset, length);
     if (retval != EFI_SUCCESS)
     {
-        CpuDeadLoop();
+        //CpuDeadLoop();
+        return EFI_ABORTED;
     }
     return EFI_SUCCESS;
 }
@@ -149,7 +151,8 @@ Fuzz_Lockbox_WriteData(
     EFI_STATUS retval = ProtocolInterface->Example1_Driver_Lockbox_WriteData(ProtocolInterface, Controller, dest, src, length);
     if (retval != EFI_SUCCESS)
     {
-        CpuDeadLoop();
+        //CpuDeadLoop();
+        return EFI_ABORTED;
     }
     return EFI_SUCCESS;
 }

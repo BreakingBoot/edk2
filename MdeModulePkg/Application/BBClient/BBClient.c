@@ -37,35 +37,35 @@ VerifyParameters (
         Status = FuzzProcessFirmwareVolume(&Input);
         if(EFI_ERROR(Status))
         {
-          DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));
+          DEBUG ((DEBUG_ERROR, "FAILED: Status Error - %r\n", Status));
         }
         break;
       case CLOSE_EVENT:
         Status = FuzzCloseEvent(&Input);
         if(EFI_ERROR(Status))
         {
-          DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));
+          DEBUG ((DEBUG_ERROR, "FAILED: Status Error - %r\n", Status));
         }
         break;
       case LOAD_IMAGE:
         Status = FuzzLoadImage(&Input, ImageHandle);
         if(EFI_ERROR(Status))
         {
-          DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));
+          DEBUG ((DEBUG_ERROR, "FAILED: Status Error - %r\n", Status));
         }
         break;
       case SMM_HARDEN:
         Status = FuzzSmmHarden(&Input);
         if(EFI_ERROR(Status))
         {
-          DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));
+          DEBUG ((DEBUG_ERROR, "FAILED: Status Error - %r\n", Status));
         }
         break;
       case EXAMPLE:
         Status = FuzzExample1(&Input, ImageHandle);
         if(EFI_ERROR(Status))
         {
-          DEBUG ((DEBUG_ERROR, "FUZZING: Status Error - %r\n", Status));
+          DEBUG ((DEBUG_ERROR, "FAILED: Status Error - %r\n", Status));
         }
         break;
       default:
@@ -80,7 +80,8 @@ VerifyParameters (
 
   if(EFI_ERROR(Status))
   {
-    CpuDeadLoop();
+    //CpuDeadLoop();
+    DEBUG ((DEBUG_ERROR, "FAILED: Status Error - %r\n", Status));
   }
 
   return EFI_SUCCESS;

@@ -17,6 +17,8 @@ HelpMenu()
           <Functions to Fuzz>: 0 - ProcessFirmwareVolume\n \
                                1 - CloseEvent\n \
                                2 - LoadImage\n \
+                               3 - SmmHarden\n \
+                               4 - Example1\n \
                                ");
     return EFI_SUCCESS;
 }
