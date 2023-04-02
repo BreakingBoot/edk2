@@ -22,19 +22,22 @@ FuzzSmmHarden(
     {
         case SERVICE_GUID:
             Guid = gEfiSmmHardenVariableManagerGuid;
+            DEBUG ((DEBUG_ERROR, "FUZZING: SmmHardenVariableManagerGuid\n"));
             break;
         case VARIABLE_GUID:
             Guid = gEfiSmmHardenBootServiceGuid;
+            DEBUG ((DEBUG_ERROR, "FUZZING: SmmHardenBootServiceGuid\n"));
             break;
     }
-    VOID *Data = NULL;
+    CHAR16 Data;
     UINTN DataSize;
-    ReadInput(Input, 1, Data);
+    ReadInput(Input, 1, &Data);
     ReadInput(Input, 1, &DataSize);
+    DataSize = StrDecimalToUintn((CHAR16 *)&DataSize);
     EFI_SMM_COMMUNICATE_HEADER *Buffer = AllocateRuntimeZeroPool(sizeof(*Buffer) + DataSize);
     Buffer->HeaderGuid = Guid;
     Buffer->MessageLength = DataSize;
-    CopyMem(&Buffer->Data, Data, DataSize);
+    CopyMem(&Buffer->Data, (VOID*)&Data, DataSize);
 
     SmmCommunication->Communicate(
         SmmCommunication,
