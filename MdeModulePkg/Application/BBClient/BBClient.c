@@ -22,8 +22,6 @@ VerifyParameters (
 )
 {
   EFI_STATUS Status;
-  DEBUG ((DEBUG_ERROR, "FUZZING: Argc = %d\n", Argc));
-  DEBUG ((DEBUG_ERROR, "FUZZING: Argv = %d\n", Argv[1]));
   if(Argc > 1)
   {
     Input.Buffer = Argv[1];
@@ -34,6 +32,7 @@ VerifyParameters (
     switch(option)
     {
       case PROCESS_FIRMWARE_VOLUME:
+        DEBUG ((DEBUG_ERROR, "FUZZING: ProcessFirmwareVolume\n"));
         Status = FuzzProcessFirmwareVolume(&Input);
         if(EFI_ERROR(Status))
         {
@@ -41,6 +40,7 @@ VerifyParameters (
         }
         break;
       case CLOSE_EVENT:
+        DEBUG ((DEBUG_ERROR, "FUZZING: CloseEvent\n"));
         Status = FuzzCloseEvent(&Input);
         if(EFI_ERROR(Status))
         {
@@ -48,6 +48,7 @@ VerifyParameters (
         }
         break;
       case LOAD_IMAGE:
+        DEBUG ((DEBUG_ERROR, "FUZZING: LoadImage\n"));
         Status = FuzzLoadImage(&Input, ImageHandle);
         if(EFI_ERROR(Status))
         {
@@ -55,6 +56,7 @@ VerifyParameters (
         }
         break;
       case SMM_HARDEN:
+        DEBUG ((DEBUG_ERROR, "FUZZING: SmmHarden\n"));
         Status = FuzzSmmHarden(&Input);
         if(EFI_ERROR(Status))
         {
@@ -62,6 +64,7 @@ VerifyParameters (
         }
         break;
       case EXAMPLE:
+        DEBUG ((DEBUG_ERROR, "FUZZING: Example1\n"));
         Status = FuzzExample1(&Input, ImageHandle);
         if(EFI_ERROR(Status))
         {
@@ -78,7 +81,7 @@ VerifyParameters (
     HelpMenu();
   }
 
-  if(EFI_ERROR(Status))
+  if(Status == EFI_ABORTED)
   {
     //CpuDeadLoop();
     DEBUG ((DEBUG_ERROR, "FAILED: Status Error - %r\n", Status));
