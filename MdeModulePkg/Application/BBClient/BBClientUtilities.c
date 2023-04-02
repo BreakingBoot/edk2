@@ -24,21 +24,25 @@ HelpMenu()
 }
 
 VOID
-    EFIAPI
-    ReadInput(
-        IN INPUT_BUFFER *InputBuffer,
-        IN UINTN NumBytes,
-        OUT VOID *Buffer)
+EFIAPI
+ReadInput(
+    IN INPUT_BUFFER *InputBuffer,
+    IN UINTN NumBytes,
+    OUT VOID *Buffer)
 {
-    if (InputBuffer->Length < NumBytes)
-    {
-        DEBUG((DEBUG_ERROR, "ERROR: Invalid Input Length BufferLength = %d, RequestedLength = %d\n", InputBuffer->Length, NumBytes));
-        ASSERT(InputBuffer->Length < NumBytes);
-    }
     ZeroMem(Buffer, NumBytes);
-    gBS->CopyMem(Buffer, InputBuffer->Buffer, NumBytes);
-    InputBuffer->Buffer = InputBuffer->Buffer + NumBytes;
-    InputBuffer->Length -= NumBytes;
+    if (InputBuffer->Length < NumBytes && InputBuffer->Length > 0)
+    {
+        gBS->CopyMem(Buffer, InputBuffer->Buffer, InputBuffer->Length);
+        InputBuffer->Buffer = InputBuffer->Buffer + InputBuffer->Length;
+        InputBuffer->Length = 0;
+    }
+    else
+    {
+        gBS->CopyMem(Buffer, InputBuffer->Buffer, NumBytes);
+        InputBuffer->Buffer = InputBuffer->Buffer + NumBytes;
+        InputBuffer->Length -= NumBytes;
+    }
 }
 
 UINTN
