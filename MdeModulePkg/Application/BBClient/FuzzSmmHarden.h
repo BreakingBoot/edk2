@@ -10,5 +10,11 @@ FuzzSmmHarden(
     IN INPUT_BUFFER *Input
 );
 
+VOID
+CommunicateSMM(
+  IN EFI_GUID  Guid,
+  IN VOID     *Data,
+  IN UINTN    DataSize
+);
 
 #endif

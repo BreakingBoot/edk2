@@ -31,16 +31,16 @@ ReadInput(
     OUT VOID *Buffer)
 {
     ZeroMem(Buffer, NumBytes);
-    if (InputBuffer->Length < NumBytes && InputBuffer->Length > 0)
+    if (InputBuffer->Length <= NumBytes && InputBuffer->Length != 0)
     {
         gBS->CopyMem(Buffer, InputBuffer->Buffer, InputBuffer->Length);
-        InputBuffer->Buffer = InputBuffer->Buffer + InputBuffer->Length;
+        InputBuffer->Buffer += InputBuffer->Length;
         InputBuffer->Length = 0;
     }
-    else
+    else if (InputBuffer->Length > NumBytes)
     {
         gBS->CopyMem(Buffer, InputBuffer->Buffer, NumBytes);
-        InputBuffer->Buffer = InputBuffer->Buffer + NumBytes;
+        InputBuffer->Buffer += NumBytes;
         InputBuffer->Length -= NumBytes;
     }
 }
