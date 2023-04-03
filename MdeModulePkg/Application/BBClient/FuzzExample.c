@@ -78,7 +78,7 @@ FuzzExample1(
             DEBUG ((DEBUG_ERROR, "READDATA: Offset = %d\n", Offset));
             CHAR8 *storage=AllocatePool(read_value);
             VOID **buffer = (void**)&storage;
-            SetMemN(storage, read_value, '\0');
+            ZeroMem(storage, read_value);
             Status = Fuzz_Lockbox_ReadData(NULL, buffer, Offset, read_value);
             DEBUG ((DEBUG_ERROR, "READDATA: Buffer = %s\n", buffer));
             FreePool(storage);
@@ -128,11 +128,10 @@ FuzzExample1(
             DEBUG ((DEBUG_ERROR, "READLOCK: Offset = %d\n", off));
             CHAR8 *stor=AllocatePool(read);
             VOID **buff = (void**)&stor;
-            SetMemN(stor, read, '\0');
+            ZeroMem(stor, read);
             Status = Fuzz_Lockbox_ReadData(NULL, buff, off, read);
             DEBUG ((DEBUG_ERROR, "READLOCK: buffer = %s\n", *buff));
             FreePool(stor);
-            Status = EFI_ABORTED;
             break;
     }
     return Status;
