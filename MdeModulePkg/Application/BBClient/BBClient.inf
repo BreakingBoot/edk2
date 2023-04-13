@@ -42,6 +42,8 @@
   FuzzCloseEvent.c
   FuzzLoadImage.c 
   FuzzSmmHarden.c
+  FuzzTrust.c
+  FuzzSchedule.c
   FuzzProcessFirmwareVolume.c 
 
 [Packages]

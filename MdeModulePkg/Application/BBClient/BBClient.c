@@ -68,6 +68,20 @@ VerifyParameters (
           DEBUG ((DEBUG_ERROR, "FAILED: Status Error - %r\n", Status));
         }
         break;
+      case TRUST:
+        Status = FuzzTrust(&Input);
+        if(EFI_ERROR(Status))
+        {
+          DEBUG ((DEBUG_ERROR, "FAILED: Status Error - %r\n", Status));
+        }
+        break;
+      case SCHEDULE:
+        Status = FuzzSchedule(&Input);
+        if(EFI_ERROR(Status))
+        {
+          DEBUG ((DEBUG_ERROR, "FAILED: Status Error - %r\n", Status));
+        }
+        break;
       default:
         HelpMenu();
         break;

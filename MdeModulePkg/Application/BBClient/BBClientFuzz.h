@@ -6,6 +6,8 @@
 #include "FuzzProcessFirmwareVolume.h"
 #include "FuzzSmmHarden.h"
 #include "FuzzExample.h"
+#include "FuzzTrust.h"
+#include "FuzzSchedule.h"
 #include "BBClientUtilities.h"
 
 #endif
