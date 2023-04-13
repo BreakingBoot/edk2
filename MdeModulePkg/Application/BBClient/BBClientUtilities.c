@@ -1,5 +1,7 @@
 #include "BBClientUtilities.h"
 
+LIST_ENTRY  mDiscoveredList = INITIALIZE_LIST_HEAD_VARIABLE (mDiscoveredList);
+
 typedef struct
 {
     MEDIA_FW_VOL_FILEPATH_DEVICE_PATH File;
