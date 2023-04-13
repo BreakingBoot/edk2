@@ -1,0 +1,25 @@
+#include "FuzzSchedule.h"
+
+
+EFI_STATUS
+EFIAPI
+FuzzSchedule(
+    IN INPUT_BUFFER *Input
+)
+{
+    LIST_ENTRY             *Link;
+    EFI_CORE_DRIVER_ENTRY  *DriverEntry;
+    EFI_STATUS Status;
+    UINTN count = 0;
+    for (Link = mDiscoveredList.ForwardLink; Link != &mDiscoveredList; Link = Link->ForwardLink) {
+        DriverEntry = CR (Link, EFI_CORE_DRIVER_ENTRY, Link, EFI_CORE_DRIVER_ENTRY_SIGNATURE);
+        if(count == 7)
+        {
+            Status = gDS->Schedule(DriverEntry->FvHandle, &DriverEntry->FileName);
+            break;
+        }
+        count++;
+    }
+
+    return Status;
+}
