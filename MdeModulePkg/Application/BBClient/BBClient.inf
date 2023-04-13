@@ -39,7 +39,7 @@
   BBClientFuzz.h
   BBClientUtilities.h
   FuzzExample.c
-  FuzzCloseEvent.c
+  FuzzEvent.c
   FuzzLoadImage.c 
   FuzzSmmHarden.c
   FuzzTrust.c

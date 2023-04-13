@@ -126,4 +126,11 @@ CreateDummyFirmwareVolume(
     IN UINT32 BlockLength
 );
 
+EFI_STATUS
+EFIAPI
+CreateDummyEvent(
+    IN INPUT_BUFFER *Input,
+    OUT EFI_EVENT *DummyEvent
+);
+
 #endif

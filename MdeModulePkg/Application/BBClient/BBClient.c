@@ -39,9 +39,9 @@ VerifyParameters (
           DEBUG ((DEBUG_ERROR, "FAILED: Status Error - %r\n", Status));
         }
         break;
-      case CLOSE_EVENT:
-        DEBUG ((DEBUG_ERROR, "FUZZING: CloseEvent\n"));
-        Status = FuzzCloseEvent(&Input);
+      case EVENT:
+        DEBUG ((DEBUG_ERROR, "FUZZING: Event\n"));
+        Status = FuzzEvent(&Input);
         if(EFI_ERROR(Status))
         {
           DEBUG ((DEBUG_ERROR, "FAILED: Status Error - %r\n", Status));
