@@ -7,7 +7,7 @@ FuzzEvent(
 )
 {
     DEBUG((DEBUG_ERROR, "FUZZING: Events\n"));
-    EFI_STATUS Status;
+    EFI_STATUS Status = EFI_SUCCESS;
     UINTN EventService;
     ReadInput(Input, 1, &EventService);
     switch(EventService)

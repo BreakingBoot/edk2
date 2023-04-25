@@ -5,7 +5,7 @@ EFIAPI
 FuzzProcessFirmwareVolume(
     IN INPUT_BUFFER *Input)
 {
-    EFI_STATUS Status;
+    EFI_STATUS Status = EFI_SUCCESS;
     // EFI_FIRMWARE_VOLUME_HEADER *FwHeader;
     EFI_HANDLE FvProtocolHandle;
     /*

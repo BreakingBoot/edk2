@@ -21,7 +21,7 @@ VerifyParameters (
   IN EFI_HANDLE ImageHandle
 )
 {
-  EFI_STATUS Status;
+  EFI_STATUS Status = EFI_SUCCESS;
   if(Argc > 1)
   {
     Input.Buffer = Argv[1];
@@ -85,9 +85,18 @@ VerifyParameters (
           DEBUG ((DEBUG_ERROR, "FAILED: Status Error - %r\n", Status));
         }
         break;
-      default:
-        HelpMenu();
+      /*
+      case PROTOCOL:
+        Status = FuzzProtocol(&Input);
+        if(EFI_ERROR(Status))
+        {
+          DEBUG ((DEBUG_ERROR, "FAILED: Status Error - %r\n", Status));
+        }
         break;
+      */
+      //default:
+      //  HelpMenu();
+      //  break;
     }
   }
   else

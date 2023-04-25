@@ -16,7 +16,7 @@ FuzzExample1(
 )
 {
     gBS->LocateProtocol(&gExample1_Driver_LockboxProtocolGuid, NULL, (VOID *)&ProtocolInterface);
-    EFI_STATUS Status;
+    EFI_STATUS Status = EFI_SUCCESS;
     UINTN Function;
     ReadInput(Input, 1, &Function);
     Function %= 6;

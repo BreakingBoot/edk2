@@ -37,7 +37,7 @@ FuzzLoadImage(
     EFI_FIRMWARE_VOLUME2_PROTOCOL *Fv;
     EFI_HANDLE FvHandle;
     UINTN BufferSize;
-    EFI_HANDLE *ImageHandle;
+    EFI_HANDLE *ImageHandle = NULL;
 
     // Link the empty DriverEntry to a Driver on in the HOB list
     // The drivers parameters will be modified to meet those

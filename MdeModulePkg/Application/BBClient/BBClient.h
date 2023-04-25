@@ -104,5 +104,6 @@
 #define EXAMPLE 4
 #define TRUST 5
 #define SCHEDULE 6
+//#define PROTOCOL 7
 
 #endif

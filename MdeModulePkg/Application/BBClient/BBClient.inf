@@ -40,6 +40,7 @@
   BBClientUtilities.h
   FuzzExample.c
   FuzzEvent.c
+  #FuzzProtocol.c
   FuzzLoadImage.c 
   FuzzSmmHarden.c
   FuzzTrust.c
@@ -76,6 +77,50 @@
   gEfiDevicePathProtocolGuid
   gExample1_Driver_LockboxProtocolGuid
   gEfiSmmCommunicationProtocolGuid  ## SOMETIMES_CONSUMES
+  gEdkiiAtaAtapiPolicyProtocolGuid
+  gEfiBootLogoProtocolGuid
+  gEdkiiBootLogo2ProtocolGuid 
+  gEfiDebuggerConfigurationProtocolGuid
+  gEdkiiDeviceSecurityProtocolGuid
+  gEdkiiFormDisplayEngineProtocolGuid
+  gEfiEbcSimpleDebuggerProtocolGuid
+  gEfiEbcVmTestProtocolGuid
+  gEsrtManagementProtocolGuid
+  gEfiFaultTolerantWriteProtocolGuid
+  gEfiFileExplorerProtocolGuid
+  gEdkiiFirmwareManagementProgressProtocolGuid
+  gEdkiiFormBrowserExProtocolGuid
+  gEdkiiFormBrowserEx2ProtocolGuid
+  gEfiGenericMemTestProtocolGuid
+  gEdkiiIoMmuProtocolGuid
+  gIpmiProtocolGuid
+  gSmmIpmiProtocolGuid
+  gEfiLoadPeImageProtocolGuid
+  gEfiLockBoxProtocolGuid
+  gEdkiiNonDiscoverableDeviceProtocolGuid
+  gEdkiiPeCoffImageEmulatorProtocolGuid
+  gEdkiiPlatformBootManagerProtocolGuid
+  gEdkiiPlatformLogoProtocolGuid
+  gEdkiiPlatformSpecificResetFilterProtocolGuid
+  gEdkiiPlatformSpecificResetHandlerProtocolGuid
+  gEfiPrint2SProtocolGuid
+  gEfiPs2PolicyProtocolGuid
+  gEdkiiSdMmcOverrideProtocolGuid
+  gEdkiiSmmExitBootServicesProtocolGuid
+  gEfiSmmFaultTolerantWriteProtocolGuid
+  gEfiSmmFirmwareVolumeBlockProtocolGuid
+  gEdkiiSmmLegacyBootProtocolGuid
+  gEdkiiSmmMemoryAttributeProtocolGuid
+  gEdkiiSmmReadyToBootProtocolGuid
+  gEfiSmmSwapAddressRangeProtocolGuid
+  gEdkiiSmmVarCheckProtocolGuid
+  gEfiSmmVariableProtocolGuid
+  gEfiSwapAddressRangeProtocolGuid
+  gEdkiiUfsHostControllerProtocolGuid
+  gEdkiiUfsHcPlatformProtocolGuid
+  gEdkiiVarCheckProtocolGuid
+  gEdkiiVariableLockProtocolGuid
+  gEdkiiVariablePolicyProtocolGuid
 
 
 
