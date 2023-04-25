@@ -9,7 +9,7 @@ FuzzSchedule(
 {
     LIST_ENTRY             *Link;
     EFI_CORE_DRIVER_ENTRY  *DriverEntry;
-    EFI_STATUS Status;
+    EFI_STATUS Status = EFI_SUCCESS;
     UINTN count = 0;
     for (Link = mDiscoveredList.ForwardLink; Link != &mDiscoveredList; Link = Link->ForwardLink) {
         DriverEntry = CR (Link, EFI_CORE_DRIVER_ENTRY, Link, EFI_CORE_DRIVER_ENTRY_SIGNATURE);
